@@ -3,6 +3,7 @@ import { Space_Mono, Bebas_Neue, DM_Mono } from 'next/font/google'
 import './globals.css'
 import LenisProvider from '@/components/LenisProvider'
 import Cursor from '@/components/Cursor/Cursor'
+import BackgroundScene from '@/components/shared/BackgroundScene'
 
 const spaceMono = Space_Mono({
   weight: ['400', '700'],
@@ -38,6 +39,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${spaceMono.variable} ${bebasNeue.variable} ${dmMono.variable}`}>
       <body>
+        <BackgroundScene />
         <LenisProvider>
           <Cursor />
           {children}

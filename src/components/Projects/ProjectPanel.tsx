@@ -1,5 +1,6 @@
 'use client'
 import { useRef, useEffect } from 'react'
+import CurvedCanvas from '@/components/shared/CurvedCanvas'
 import styles from './Projects.module.css'
 
 interface Project {
@@ -39,6 +40,10 @@ export default function ProjectPanel({ project, isLast }: { project: Project; is
             y: 20, opacity: 0, stagger: 0.1, duration: 0.5, delay: 0.35, ease: 'power2.out',
             scrollTrigger: { trigger: panelRef.current, start: 'top 70%' },
           })
+          gsap.fromTo(panelRef.current!.querySelector('.ghost-text'),
+            { y: '50%' },
+            { y: '-50%', scrollTrigger: { trigger: panelRef.current, start: 'top bottom', end: 'bottom top', scrub: 1 } }
+          )
         }, panelRef)
         return () => ctx.revert()
       })
@@ -53,7 +58,8 @@ export default function ProjectPanel({ project, isLast }: { project: Project; is
 
       <div className={styles.content}>
         {/* Left: Image panel */}
-        <div ref={imageRef} className={styles.imagePanel} style={{ background: project.imageGradient }}>
+        <div ref={imageRef} className={styles.imagePanel}>
+          <CurvedCanvas title={project.title} imageGradient={project.imageGradient} />
           <span className={styles.imagePanelWatermark}>{project.title.toUpperCase()}</span>
           <div className={styles.imagePanelBorder} />
         </div>

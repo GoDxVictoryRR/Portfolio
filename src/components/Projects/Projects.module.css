@@ -1,11 +1,43 @@
-.projectSection {
+.carouselSection {
   position: relative;
   height: 100vh;
   width: 100%;
-  background: var(--color-bg);
+  background: transparent;
   overflow: hidden;
   display: flex;
   align-items: center;
+}
+
+.carouselActiveInfo {
+  position: absolute;
+  bottom: 22vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  z-index: 2;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.date {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.1em;
+}
+
+.title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 80px;
+  line-height: 0.85;
+  color: #ffffff;
 }
 
 .content {

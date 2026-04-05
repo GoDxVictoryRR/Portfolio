@@ -45,6 +45,32 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+ /* ——— Site Decorations (Ghost Text & Labels) ——— */
+.ghost-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(120px, 20vw, 400px);
+  color: rgba(255,255,255,0.02);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 1;
+  text-transform: uppercase;
+}
+
+.section-label {
+  position: absolute;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  z-index: 5;
+  pointer-events: none;
+  display: block;
+}
   cursor: none;
 }
 
@@ -53,14 +79,16 @@ html {
   scroll-behavior: auto; /* Lenis handles smooth scroll */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--color-bg);
 }
 
 body {
-  background-color: var(--color-bg);
+  background-color: transparent;
   color: var(--color-text-primary);
   font-family: 'DM Mono', 'IBM Plex Mono', monospace;
   font-size: 15px;
-  line-height: 1.7;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
@@ -139,8 +167,8 @@ body {
 .ghost-text {
   position: absolute;
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(80px, 20vw, 220px);
-  color: rgba(255,255,255,0.04);
+  font-size: clamp(140px, 35vw, 400px);
+  color: rgba(255,255,255,0.06);
   letter-spacing: -0.02em;
   pointer-events: none;
   user-select: none;
@@ -211,3 +239,28 @@ a {
   height: 48px;
   border-color: rgba(123,94,167,0.8);
 }
+
+/* ——— Audio Bars ——— */
+.audio-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 18px;
+  opacity: 0.6;
+}
+
+.audio-bars span {
+  width: 2px;
+  background: white;
+  border-radius: 1px;
+}
+
+.audio-bars span:nth-child(1) { height: 8px; animation: audio-bar-anim 0.8s ease-in-out infinite alternate; }
+.audio-bars span:nth-child(2) { height: 16px; animation: audio-bar-anim 1.2s ease-in-out infinite alternate-reverse; }
+.audio-bars span:nth-child(3) { height: 10px; animation: audio-bar-anim 1s ease-in-out infinite alternate; }
+
+@keyframes audio-bar-anim {
+  from { transform: scaleY(1); }
+  to { transform: scaleY(0.4); }
+}
+

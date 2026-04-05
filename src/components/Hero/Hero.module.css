@@ -10,29 +10,35 @@
 }
 
 .canvasWrapper {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 2;
 }
 
 /* ——— Name ——— */
 .nameWrapper {
-  position: relative;
-  z-index: 3;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   pointer-events: none;
+  width: 100%;
 }
 
 .name {
-  font-family: 'Bebas Neue', 'Antonio', sans-serif;
-  font-size: clamp(100px, 16vw, 240px);
+  font-family: 'Bebas Neue', var(--font-bebas), sans-serif;
+  font-size: clamp(100px, 16vw, 220px);
   color: #ffffff;
-  letter-spacing: -0.02em;
-  line-height: 0.9;
+  letter-spacing: -0.04em;
+  line-height: 0.8;
   text-align: center;
   display: block;
+  opacity: 1;
+  white-space: nowrap;
 }
 
 .role {
@@ -99,15 +105,17 @@
 
 .quaternionValues {
   display: flex;
-  gap: 8px;
+  justify-content: space-between;
+  width: 100%;
   font-family: 'Space Mono', monospace;
-  font-size: 12px;
+  font-size: 13px;
   color: rgba(255,255,255,0.7);
   font-variant-numeric: tabular-nums;
 }
 
 .quaternionValues span {
-  min-width: 44px;
+  flex: 1;
+  text-align: center;
 }
 
 .panelSep {
@@ -118,15 +126,17 @@
 
 .quaternionLabels {
   display: flex;
-  gap: 8px;
+  justify-content: space-between;
   font-family: 'Space Mono', monospace;
   font-size: 10px;
   color: rgba(255,255,255,0.25);
-  padding-left: 16px;
+  margin-left: 20px; /* offset for toggle dot */
+  margin-top: 4px;
 }
 
 .quaternionLabels span {
-  min-width: 44px;
+  flex: 1;
+  text-align: center;
 }
 
 /* ——— Arcball ——— */
@@ -179,9 +189,8 @@
   -webkit-appearance: none;
   appearance: none;
   flex: 1;
-  height: 2px;
-  background: rgba(255,255,255,0.2);
-  border-radius: 1px;
+  height: 1px;
+  background: rgba(255,255,255,0.1);
   outline: none;
   cursor: pointer;
 }
@@ -189,16 +198,16 @@
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+  width: 24px;
+  height: 2px;
   background: #ffffff;
   cursor: pointer;
+  border-radius: 0;
   transition: transform 0.15s ease;
 }
 
 .slider::-webkit-slider-thumb:hover {
-  transform: scale(1.3);
+  transform: scaleY(2);
 }
 
 .sliderValue {

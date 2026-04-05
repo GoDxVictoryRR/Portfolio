@@ -35,3 +35,8 @@ next-env.d.ts
 # OS files
 Thumbs.db
 Desktop.ini
+
+# Exclude documentation and visual assets
+*.md
+!README.md
+/visuals/

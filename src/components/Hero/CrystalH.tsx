@@ -15,13 +15,14 @@ interface CrystalHProps {
 
 function createHGeometry(): THREE.BufferGeometry {
   const shape = new THREE.Shape()
-  const lw = 0.8
-  const rw = 0.8
-  const cw = 1.2
-  const ch = 0.6
-  const h = 4.0
+  
+  const lw = 0.8   // left pillar width
+  const rw = 0.8   // right pillar width
+  const cw = 1.2   // crossbar width
+  const ch = 0.6   // crossbar height
+  const h = 4.0    // total height
   const totalW = lw + cw + rw
-
+  
   shape.moveTo(0, 0)
   shape.lineTo(lw, 0)
   shape.lineTo(lw, (h - ch) / 2)
@@ -35,7 +36,7 @@ function createHGeometry(): THREE.BufferGeometry {
   shape.lineTo(lw, h)
   shape.lineTo(0, h)
   shape.lineTo(0, 0)
-
+  
   const extrudeSettings: THREE.ExtrudeGeometryOptions = {
     steps: 1,
     depth: 1.2,
@@ -44,7 +45,7 @@ function createHGeometry(): THREE.BufferGeometry {
     bevelSize: 0.06,
     bevelSegments: 4,
   }
-
+  
   const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings)
   geometry.center()
   return geometry
@@ -54,6 +55,7 @@ const vertexShader = `
   varying vec3 vNormal;
   varying vec3 vPosition;
   varying vec3 vViewDir;
+  uniform float uTime;
 
   void main() {
     vNormal = normalize(normalMatrix * normal);
@@ -76,43 +78,43 @@ const fragmentShader = `
   vec3 iridescence(float cosTheta, float time) {
     float fresnel = pow(1.0 - cosTheta, 3.0);
     float hue = fresnel * 2.5 + time * 0.15;
-
-    vec3 col1 = vec3(0.43, 0.16, 0.65);
-    vec3 col2 = vec3(0.08, 0.64, 0.75);
-    vec3 col3 = vec3(0.97, 0.62, 0.04);
-    vec3 col4 = vec3(0.06, 0.73, 0.51);
-
+    
+    vec3 col1 = vec3(0.43, 0.16, 0.65);  // purple
+    vec3 col2 = vec3(0.08, 0.64, 0.75);  // teal  
+    vec3 col3 = vec3(0.97, 0.62, 0.04);  // gold
+    vec3 col4 = vec3(0.06, 0.73, 0.51);  // green
+    
     float t = fract(hue);
     float idx = floor(hue);
-
+    
     vec3 color;
     if (mod(idx, 4.0) < 1.0)      color = mix(col1, col2, t);
     else if (mod(idx, 4.0) < 2.0) color = mix(col2, col3, t);
     else if (mod(idx, 4.0) < 3.0) color = mix(col3, col4, t);
     else                            color = mix(col4, col1, t);
-
+    
     return color;
   }
 
   void main() {
     vec3 normal = normalize(vNormal);
     float cosTheta = dot(normal, vViewDir);
-
+    
     vec3 baseColor = vec3(0.05, 0.04, 0.08) * uColor;
     vec3 iridColor = iridescence(abs(cosTheta), uTime);
-
+    
     float fresnel = pow(1.0 - abs(cosTheta), 2.0 + uRoughness * 3.0);
-
+    
     float n = fract(sin(dot(vPosition * uNoiseScale, vec3(12.9898, 78.233, 45.543))) * 43758.5453);
     float roughMask = mix(1.0, n, uRoughness * 0.5);
-
+    
     vec3 finalColor = mix(baseColor, iridColor, fresnel * roughMask * 1.5);
-
+    
     float streak = pow(max(0.0, dot(reflect(-vViewDir, normal), vec3(0.5, 0.8, 0.3))), 30.0);
     finalColor += streak * 0.8 * iridColor;
-
+    
     float alpha = mix(0.85, 0.97, fresnel);
-
+    
     gl_FragColor = vec4(finalColor, alpha);
   }
 `
@@ -210,6 +212,7 @@ const CrystalH = forwardRef<CrystalHRef, CrystalHProps>(({ onQuaternionUpdate },
     let autoRotate = true
     let isDragging = false
     let prevMouse = { x: 0, y: 0 }
+    let velocity = { x: 0, y: 0 }
     const mouseInfluence = { x: 0, y: 0 }
     const targetMouseInfluence = { x: 0, y: 0 }
     let resumeTimeout: ReturnType<typeof setTimeout>
@@ -220,9 +223,21 @@ const CrystalH = forwardRef<CrystalHRef, CrystalHProps>(({ onQuaternionUpdate },
 
       material.uniforms.uTime.value = time * 0.001
 
-      if (autoRotate) {
+      if (isDragging) {
+        // Dragging handled in mouse event
+      } else if (autoRotate) {
         mesh.rotation.y += 0.003
         mesh.rotation.x += 0.0008
+      } else {
+        // Momentum decay
+        mesh.rotation.y += velocity.x
+        mesh.rotation.x += velocity.y
+        velocity.x *= 0.94 // friction
+        velocity.y *= 0.94
+        
+        if (Math.abs(velocity.x) < 0.0001 && Math.abs(velocity.y) < 0.0001) {
+          velocity.x = 0; velocity.y = 0;
+        }
       }
 
       mouseInfluence.x += (targetMouseInfluence.x - mouseInfluence.x) * 0.05
@@ -243,22 +258,27 @@ const CrystalH = forwardRef<CrystalHRef, CrystalHProps>(({ onQuaternionUpdate },
     }
     animate(0)
 
-    // Mouse parallax
+    // Mouse parallax and drag
     function onMouseMove(e: MouseEvent) {
       targetMouseInfluence.x = (e.clientX / window.innerWidth - 0.5) * 2
       targetMouseInfluence.y = (e.clientY / window.innerHeight - 0.5) * 2
 
       if (!isDragging) return
-      const dx = (e.clientX - prevMouse.x) * 0.01
-      const dy = (e.clientY - prevMouse.y) * 0.01
+      
+      const dx = (e.clientX - prevMouse.x) * 0.005
+      const dy = (e.clientY - prevMouse.y) * 0.005
+      
       mesh.rotation.y += dx
       mesh.rotation.x += dy
+      
+      velocity = { x: dx, y: dy }
       prevMouse = { x: e.clientX, y: e.clientY }
     }
 
     function onMouseDown(e: MouseEvent) {
       isDragging = true
       autoRotate = false
+      velocity = { x: 0, y: 0 }
       clearTimeout(resumeTimeout)
       prevMouse = { x: e.clientX, y: e.clientY }
     }
@@ -266,7 +286,8 @@ const CrystalH = forwardRef<CrystalHRef, CrystalHProps>(({ onQuaternionUpdate },
     function onMouseUp() {
       if (isDragging) {
         isDragging = false
-        resumeTimeout = setTimeout(() => { autoRotate = true }, 2000)
+        // Delay resume to let momentum play out
+        resumeTimeout = setTimeout(() => { autoRotate = true }, 3000)
       }
     }
 
@@ -278,10 +299,23 @@ const CrystalH = forwardRef<CrystalHRef, CrystalHProps>(({ onQuaternionUpdate },
       renderer.setSize(width, height)
     }
 
+    function onArcballDrag(e: Event) {
+      const customEvent = e as CustomEvent
+      const { dx, dy } = customEvent.detail
+      if (mesh) {
+        mesh.rotation.y += dx * 0.02
+        mesh.rotation.x += dy * 0.02
+        autoRotate = false
+        clearTimeout(resumeTimeout)
+        resumeTimeout = setTimeout(() => { autoRotate = true }, 4000)
+      }
+    }
+
     window.addEventListener('mousemove', onMouseMove)
     canvas.addEventListener('mousedown', onMouseDown)
     window.addEventListener('mouseup', onMouseUp)
     window.addEventListener('resize', onResize)
+    window.addEventListener('arcballDrag', onArcballDrag)
 
     return () => {
       cancelAnimationFrame(rafRef.current)
@@ -290,6 +324,7 @@ const CrystalH = forwardRef<CrystalHRef, CrystalHProps>(({ onQuaternionUpdate },
       canvas.removeEventListener('mousedown', onMouseDown)
       window.removeEventListener('mouseup', onMouseUp)
       window.removeEventListener('resize', onResize)
+      window.removeEventListener('arcballDrag', onArcballDrag)
       renderer.dispose()
       geometry.dispose()
       material.dispose()

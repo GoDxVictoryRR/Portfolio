@@ -1,5 +1,6 @@
 'use client'
 import { useRef, useEffect } from 'react'
+import CurvedCanvas from '@/components/shared/CurvedCanvas'
 import styles from './Experience.module.css'
 
 interface Exp {
@@ -36,6 +37,10 @@ export default function ExperiencePanel({ exp }: { exp: Exp }) {
             x: 60, opacity: 0, duration: 0.8, delay: 0.15, ease: 'power3.out',
             scrollTrigger: { trigger: panelRef.current, start: 'top 70%' },
           })
+          gsap.fromTo(panelRef.current!.querySelector('.ghost-text'),
+            { y: '50%' },
+            { y: '-50%', scrollTrigger: { trigger: panelRef.current, start: 'top bottom', end: 'bottom top', scrub: 1 } }
+          )
         }, panelRef)
         return () => ctx.revert()
       })
@@ -49,7 +54,8 @@ export default function ExperiencePanel({ exp }: { exp: Exp }) {
 
       <div className={styles.content}>
         {/* Left: card panel */}
-        <div ref={cardRef} className={styles.card} style={{ background: exp.imageGradient }}>
+        <div ref={cardRef} className={styles.card}>
+          <CurvedCanvas title={exp.company} imageGradient={exp.imageGradient} />
           <span className={styles.cardWatermark}>{exp.company.toUpperCase()}</span>
           <div className={styles.cardInner}>
             <span className={`${styles.cardRole} font-display`}>{exp.role}</span>

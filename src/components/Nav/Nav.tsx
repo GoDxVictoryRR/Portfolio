@@ -8,7 +8,11 @@ export default function Nav() {
     <nav className={styles.nav}>
       {/* Logo */}
       <Link href="/" className={styles.logo}>
-        ▲ HARDIK
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ marginRight: '8px' }}>
+          <path d="M12 3L22 20H2L12 3Z" />
+          <path d="M12 8L18 18H6L12 8Z" opacity="0.3" />
+        </svg>
+        HARDIK
       </Link>
 
       {/* Center links */}

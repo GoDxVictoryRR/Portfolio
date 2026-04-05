@@ -42,9 +42,15 @@ export default function Loader({ onComplete }: LoaderProps) {
       }
 
       // Phase 4: wipe away (split top/bottom)
-      tl.to(topRef.current,    { y: '-100%', duration: 0.7, ease: 'power3.inOut' }, 1.8)
-        .to(bottomRef.current, { y: '100%',  duration: 0.7, ease: 'power3.inOut' }, 1.8)
-        .call(() => onComplete(), [], 2.5)
+      tl.to(topRef.current,    { y: '-100%', duration: 0.6, ease: 'expo.inOut' }, '+=0.8')
+        .to(bottomRef.current, { y: '100%',  duration: 0.6, ease: 'expo.inOut' }, '-=0.6')
+        .to([triangleRef.current, circleRef.current, bracketRef.current], { 
+          scale: 0.8, 
+          opacity: 0, 
+          duration: 0.4, 
+          ease: 'power2.in' 
+        }, '-=0.6')
+        .call(() => onComplete(), [], '+=0.1')
     })
   }, [onComplete])
 
