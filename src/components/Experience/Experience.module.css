@@ -1,0 +1,171 @@
+.expSection {
+  position: relative;
+  height: 100vh;
+  width: 100%;
+  background: var(--color-bg);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  padding: 0 80px;
+  gap: 60px;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+/* ——— Card Panel ——— */
+.card {
+  width: 55%;
+  height: 60vh;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  transform: perspective(1000px) rotateY(-3deg) rotateX(2deg);
+  transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94),
+              border-color 0.4s ease,
+              box-shadow 0.4s ease;
+}
+
+.card:hover {
+  transform: perspective(1000px) rotateY(-2deg) rotateX(1deg) translateY(-8px);
+  border-color: rgba(255,255,255,0.2);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(123,94,167,0.1);
+}
+
+.cardWatermark {
+  position: absolute;
+  top: 20px;
+  left: 24px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 80px;
+  color: rgba(255,255,255,0.06);
+  letter-spacing: -0.02em;
+  pointer-events: none;
+  user-select: none;
+  line-height: 1;
+}
+
+.cardInner {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cardRole {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 32px;
+  color: #ffffff;
+  display: block;
+}
+
+.cardDate {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: rgba(255,255,255,0.4);
+}
+
+.cardBullets {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cardBullets li {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: rgba(255,255,255,0.45);
+  line-height: 1.5;
+  padding-left: 0;
+}
+
+.cardTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+/* ——— Details ——— */
+.details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.companyLabel {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(20px, 2.5vw, 32px);
+  color: rgba(255,255,255,0.9);
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.role {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(48px, 6vw, 80px);
+  color: #ffffff;
+  line-height: 0.95;
+  margin-bottom: 8px;
+}
+
+.dateRange {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 24px;
+}
+
+.description {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.8;
+  max-width: 420px;
+  margin-bottom: 24px;
+}
+
+.detailList {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.detailList li {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: rgba(255,255,255,0.25);
+  line-height: 1.7;
+  padding-left: 14px;
+  position: relative;
+}
+
+.detailList li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: rgba(255,255,255,0.15);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

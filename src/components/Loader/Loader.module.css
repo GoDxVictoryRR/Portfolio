@@ -1,0 +1,71 @@
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.loaderTop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: #080808;
+  overflow: hidden;
+}
+
+.loaderBottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: #080808;
+}
+
+.lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  /* Extend to full viewport height visually */
+  height: 200%;
+  top: -100%;
+}
+
+/* White triangle — bottom-left of viewport */
+.triangle {
+  position: fixed;
+  left: 8vw;
+  bottom: 25vh;
+  width: 0;
+  height: 0;
+  border-left: 80px solid transparent;
+  border-right: 80px solid transparent;
+  border-bottom: 140px solid #ffffff;
+  opacity: 0;
+}
+
+/* Dashed circle — center */
+.circle {
+  position: fixed;
+  left: 38vw;
+  top: 40vh;
+  width: 160px;
+  height: 160px;
+  border: 1.5px dashed rgba(255,255,255,0.4);
+  border-radius: 50%;
+  opacity: 0;
+}
+
+/* L-bracket — top-right */
+.bracket {
+  position: fixed;
+  right: 20vw;
+  top: 40vh;
+  width: 80px;
+  height: 50px;
+  border-top: 1px solid rgba(255,255,255,0.3);
+  border-right: 1px solid rgba(255,255,255,0.3);
+  opacity: 0;
+}

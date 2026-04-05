@@ -1,0 +1,213 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+:root {
+  /* Backgrounds */
+  --color-bg:           #080808;
+  --color-bg-panel:     #0f0f0f;
+  --color-grid:         #1a1a1a;
+  --color-grid-plus:    #2a2a2a;
+
+  /* Text */
+  --color-text-primary:   #ffffff;
+  --color-text-secondary: #888888;
+  --color-text-tertiary:  #444444;
+  --color-text-mono:      #aaaaaa;
+
+  /* Accent */
+  --color-accent:       #7b5ea7;
+  --color-accent-teal:  #2dd4bf;
+  --color-accent-gold:  #f59e0b;
+
+  /* UI Elements */
+  --color-border:       rgba(255,255,255,0.08);
+  --color-border-hover: rgba(255,255,255,0.2);
+  --color-tag-bg:       rgba(255,255,255,0.06);
+  --color-tag-border:   rgba(255,255,255,0.15);
+
+  /* Crystal / 3D */
+  --crystal-color-1:    #6d28d9;
+  --crystal-color-2:    #0ea5e9;
+  --crystal-color-3:    #f97316;
+  --crystal-color-4:    #10b981;
+
+  /* Spacing */
+  --space-xs:   8px;
+  --space-sm:   16px;
+  --space-md:   24px;
+  --space-lg:   48px;
+  --space-xl:   80px;
+  --space-2xl:  120px;
+  --space-3xl:  200px;
+}
+
+/* ——— Reset ——— */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  cursor: none;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: auto; /* Lenis handles smooth scroll */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: 'DM Mono', 'IBM Plex Mono', monospace;
+  font-size: 15px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ——— Scrollbar ——— */
+::-webkit-scrollbar {
+  width: 0;
+  display: none;
+}
+
+/* ——— Selection ——— */
+::selection {
+  background: rgba(123, 94, 167, 0.3);
+  color: #ffffff;
+}
+
+/* ——— Typography Classes ——— */
+.font-display {
+  font-family: 'Bebas Neue', 'Antonio', sans-serif;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.font-mono {
+  font-family: 'Space Mono', 'IBM Plex Mono', monospace;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+}
+
+.font-body {
+  font-family: 'DM Mono', 'IBM Plex Mono', monospace;
+  font-weight: 400;
+}
+
+/* ——— Grid Background ——— */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 80px 80px;
+  background-position: center center;
+}
+
+/* ——— Tag / Chip ——— */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 2px;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.03);
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.tag:hover {
+  border-color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.9);
+}
+
+/* ——— Section Label (left edge vertical) ——— */
+.section-label {
+  position: absolute;
+  left: 40px;
+  top: 50%;
+  transform: translateY(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.2em;
+}
+
+/* ——— Ghost Watermark Text ——— */
+.ghost-text {
+  position: absolute;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(80px, 20vw, 220px);
+  color: rgba(255,255,255,0.04);
+  letter-spacing: -0.02em;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+}
+
+/* ——— Link Reset ——— */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ——— Audio Bars ——— */
+.audio-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 20px;
+}
+
+.audio-bars span {
+  width: 3px;
+  background: rgba(255,255,255,0.6);
+  border-radius: 1px;
+  animation: audioBar 1.2s ease-in-out infinite alternate;
+}
+
+.audio-bars span:nth-child(1) { height: 10px; animation-delay: 0s; }
+.audio-bars span:nth-child(2) { height: 18px; animation-delay: 0.2s; }
+.audio-bars span:nth-child(3) { height: 6px;  animation-delay: 0.4s; }
+
+@keyframes audioBar {
+  from { transform: scaleY(1); }
+  to   { transform: scaleY(0.3); }
+}
+
+/* ——— Custom Cursor ——— */
+.cursor-dot {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  background: #ffffff;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.3s ease;
+}
+
+.cursor-ring {
+  position: fixed;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
+}
+
+.cursor-ring.hover {
+  width: 48px;
+  height: 48px;
+  border-color: rgba(123,94,167,0.8);
+}
