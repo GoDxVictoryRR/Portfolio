@@ -11,17 +11,20 @@ export default function Contact() {
       import('gsap/ScrollTrigger').then(({ ScrollTrigger }) => {
         gsap.registerPlugin(ScrollTrigger)
         const ctx = gsap.context(() => {
-          gsap.from(['.contact-geo-1','.contact-geo-2','.contact-geo-3'], {
-            opacity: 0, stagger: 0.15, duration: 0.5, ease: 'power2.out',
-            scrollTrigger: { trigger: sectionRef.current, start: 'top 60%' },
-          })
-          gsap.from('.contact-heading span', {
-            y: 100, opacity: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out',
-            scrollTrigger: { trigger: sectionRef.current, start: 'top 60%' },
-          })
-          gsap.from('.contact-link', {
-            y: 20, opacity: 0, stagger: 0.08, duration: 0.5, delay: 0.4, ease: 'power2.out',
-            scrollTrigger: { trigger: sectionRef.current, start: 'top 60%' },
+          // Set initial hidden state
+          gsap.set(['.contact-geo-1','.contact-geo-2','.contact-geo-3'], { opacity: 0 })
+          gsap.set('.contact-heading span', { opacity: 0, y: 50 })
+          gsap.set('.contact-link', { opacity: 0, y: 30 })
+
+          // ScrollTrigger to reveal
+          ScrollTrigger.create({
+            trigger: sectionRef.current,
+            start: 'top 85%',
+            onEnter: () => {
+              gsap.to(['.contact-geo-1','.contact-geo-2','.contact-geo-3'], { opacity: 1, stagger: 0.15, duration: 0.5, ease: 'power2.out' })
+              gsap.to('.contact-heading span', { opacity: 1, y: 0, stagger: 0.1, duration: 0.8, ease: 'power3.out' })
+              gsap.to('.contact-link', { opacity: 1, y: 0, stagger: 0.1, duration: 0.5, delay: 0.4, ease: 'power2.out' })
+            }
           })
         }, sectionRef)
         return () => ctx.revert()
@@ -50,11 +53,8 @@ export default function Contact() {
       {/* Main content */}
       <div className={styles.inner}>
         <h2 className={`${styles.heading} contact-heading font-display`}>
-          {contact.heading.split('\n').map((line, i) => (
-            <span key={i} style={{ display: 'block', overflow: 'hidden' }}>
-              <span style={{ display: 'block' }}>{line}</span>
-            </span>
-          ))}
+          <span>GET IN</span>
+          <span>TOUCH</span>
         </h2>
 
         <p className={styles.subheading}>{contact.subheading}</p>

@@ -5,7 +5,7 @@ import styles from './Nav.module.css'
 
 export default function Nav() {
   return (
-    <nav className={styles.nav}>
+    <nav className={`${styles.nav} nav-element`}>
       {/* Logo */}
       <Link href="/" className={styles.logo}>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ marginRight: '8px' }}>

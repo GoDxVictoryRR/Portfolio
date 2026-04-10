@@ -75,47 +75,49 @@ const fragmentShader = `
   uniform float uNoiseScale;
   uniform vec3 uColor;
 
-  vec3 iridescence(float cosTheta, float time) {
-    float fresnel = pow(1.0 - cosTheta, 3.0);
-    float hue = fresnel * 2.5 + time * 0.15;
-    
-    vec3 col1 = vec3(0.43, 0.16, 0.65);  // purple
-    vec3 col2 = vec3(0.08, 0.64, 0.75);  // teal  
-    vec3 col3 = vec3(0.97, 0.62, 0.04);  // gold
-    vec3 col4 = vec3(0.06, 0.73, 0.51);  // green
-    
-    float t = fract(hue);
-    float idx = floor(hue);
-    
-    vec3 color;
-    if (mod(idx, 4.0) < 1.0)      color = mix(col1, col2, t);
-    else if (mod(idx, 4.0) < 2.0) color = mix(col2, col3, t);
-    else if (mod(idx, 4.0) < 3.0) color = mix(col3, col4, t);
-    else                            color = mix(col4, col1, t);
-    
-    return color;
-  }
-
   void main() {
     vec3 normal = normalize(vNormal);
-    float cosTheta = dot(normal, vViewDir);
+    vec3 viewDir = normalize(vViewDir);
     
-    vec3 baseColor = vec3(0.05, 0.04, 0.08) * uColor;
-    vec3 iridColor = iridescence(abs(cosTheta), uTime);
+    float cosTheta = dot(normal, viewDir);
+    float hue = cosTheta * 2.0 + uTime * 0.12;
     
-    float fresnel = pow(1.0 - abs(cosTheta), 2.0 + uRoughness * 3.0);
+    vec3 col1 = vec3(0.43, 0.16, 0.65);  // purple
+    vec3 col2 = vec3(0.08, 0.64, 0.75);  // teal
+    vec3 col3 = vec3(0.06, 0.73, 0.51);  // green
+    vec3 col4 = vec3(0.97, 0.62, 0.04);  // gold
+    
+    float t = fract(hue);
+    float idx = mod(floor(hue), 4.0);
+    
+    vec3 iridColor;
+    if (idx < 1.0)      iridColor = mix(col1, col2, t);
+    else if (idx < 2.0) iridColor = mix(col2, col3, t);
+    else if (idx < 3.0) iridColor = mix(col3, col4, t);
+    else                iridColor = mix(col4, col1, t);
+    
+    float whiteMix = smoothstep(0.85, 1.0, cosTheta);
+    iridColor = mix(iridColor, vec3(1.0), whiteMix * 0.9);
     
     float n = fract(sin(dot(vPosition * uNoiseScale, vec3(12.9898, 78.233, 45.543))) * 43758.5453);
-    float roughMask = mix(1.0, n, uRoughness * 0.5);
+    float roughMask = mix(1.0, n, uRoughness);
     
-    vec3 finalColor = mix(baseColor, iridColor, fresnel * roughMask * 1.5);
+    vec3 finalColor = iridColor * roughMask;
     
-    float streak = pow(max(0.0, dot(reflect(-vViewDir, normal), vec3(0.5, 0.8, 0.3))), 30.0);
-    finalColor += streak * 0.8 * iridColor;
+    vec3 lightDir = normalize(vec3(0.8, 1.0, 0.5));
+    float streak = pow(max(0.0, dot(reflect(-viewDir, normal), lightDir)), 90.0);
+    vec3 streakColor = vec3(
+      streak * sin(streak * 6.28 + uTime),
+      streak * sin(streak * 6.28 + uTime + 2.09),
+      streak * sin(streak * 6.28 + uTime + 4.19)
+    );
+    finalColor += streakColor * 1.8;
     
-    float alpha = mix(0.85, 0.97, fresnel);
+    if (!gl_FrontFacing) {
+      finalColor *= 0.35;
+    }
     
-    gl_FragColor = vec4(finalColor, alpha);
+    gl_FragColor = vec4(finalColor, 0.82);
   }
 `
 
@@ -198,6 +200,7 @@ const CrystalH = forwardRef<CrystalHRef, CrystalHProps>(({ onQuaternionUpdate },
         uColor:      { value: new THREE.Color(1, 1, 1) },
       },
       transparent: true,
+      depthWrite: false,
       side: THREE.DoubleSide,
     })
     materialRef.current = material
@@ -253,6 +256,14 @@ const CrystalH = forwardRef<CrystalHRef, CrystalHProps>(({ onQuaternionUpdate },
 
       const q = mesh.quaternion
       onQuaternionUpdate({ x: q.x, y: q.y, z: q.z, w: q.w })
+
+      const tIrid = (time * 0.001 * 0.15) % 1
+      const idxIrid = Math.floor(tIrid * 4)
+      const remainderIrid = (tIrid * 4) - idxIrid
+      const colA = new THREE.Color(['#6d28d9', '#0ea5e9', '#10b981', '#f59e0b'][idxIrid % 4])
+      const colB = new THREE.Color(['#6d28d9', '#0ea5e9', '#10b981', '#f59e0b'][(idxIrid + 1) % 4])
+      const cFinal = colA.lerp(colB, remainderIrid)
+      window.dispatchEvent(new CustomEvent('crystalColor', { detail: { r: cFinal.r, g: cFinal.g, b: cFinal.b } }))
 
       renderer.render(scene, camera)
     }

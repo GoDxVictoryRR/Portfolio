@@ -67,8 +67,9 @@
 
 .heading {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(80px, 14vw, 200px);
+  font-size: clamp(70px, 13vw, 190px);
   color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
   letter-spacing: -0.02em;
   line-height: 0.85;
   text-align: center;

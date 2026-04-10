@@ -21,7 +21,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1;
+  z-index: 5;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -31,14 +31,24 @@
 
 .name {
   font-family: 'Bebas Neue', var(--font-bebas), sans-serif;
-  font-size: clamp(100px, 16vw, 220px);
+  font-size: clamp(100px, 15vw, 220px);
   color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
   letter-spacing: -0.04em;
   line-height: 0.8;
   text-align: center;
   display: block;
-  opacity: 1;
   white-space: nowrap;
+  position: relative;
+  z-index: 5;
+  text-shadow: none;
+}
+
+.hero-name-line-1,
+.hero-name-line-2 {
+  opacity: 0;
+  transform: translateY(80px);
+  display: block;
 }
 
 .role {

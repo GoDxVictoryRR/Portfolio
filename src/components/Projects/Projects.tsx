@@ -20,24 +20,45 @@ export default function Projects() {
         pin: true,
         scrub: 1,
         onUpdate: (self) => {
-          // Calculate which project is active based on scroll progress
           const index = Math.min(
             projects.length - 1,
             Math.floor(self.progress * projects.length)
           )
           setActiveIndex(index)
-          
-          // Smooth parallax for Ghost Text
-          gsap.to('.ghost-text-projects', {
-            y: -self.progress * 200, // Move up as we scroll
-            duration: 0.5,
-            overwrite: 'auto'
-          })
 
-          // Dispatch custom event to notify BackgroundScene to rotate carousel
-          window.dispatchEvent(new CustomEvent('projectScroll', { 
-            detail: { progress: self.progress } 
+          window.dispatchEvent(new CustomEvent('projectScroll', {
+            detail: { progress: self.progress }
           }))
+        }
+      })
+
+      // Ghost text parallax
+      gsap.to('.ghost-text-projects', {
+        y: '-20%',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1
+        }
+      })
+
+      // Set initial hidden state
+      gsap.set(`.${styles.imagePanel}`, { opacity: 0, x: -80 })
+      gsap.set(`.${styles.details}`, { opacity: 0, x: 80 })
+      gsap.set(`.${styles.metrics} > *`, { opacity: 0, y: 20 })
+      gsap.set(`.${styles.tags} .tag`, { opacity: 0, y: 15 })
+
+      // ScrollTrigger to reveal
+      ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: 'top 85%',
+        onEnter: () => {
+          gsap.to(`.${styles.imagePanel}`, { opacity: 1, x: 0, duration: 1.0, ease: 'power3.out' })
+          gsap.to(`.${styles.details}`, { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out', delay: 0.2 })
+          gsap.to(`.${styles.metrics} > *`, { opacity: 1, y: 0, stagger: 0.1, duration: 0.4, ease: 'power2.out' })
+          gsap.to(`.${styles.tags} .tag`, { opacity: 1, y: 0, stagger: 0.04, duration: 0.3, ease: 'power2.out' })
         }
       })
     }, sectionRef)

@@ -15,40 +15,20 @@ export default function Loader({ onComplete }: LoaderProps) {
   const linesRef = useRef<SVGSVGElement>(null)
 
   useEffect(() => {
-    // Dynamically import GSAP to avoid SSR issues
     import('gsap').then(({ gsap }) => {
       const tl = gsap.timeline()
 
-      // Phase 2: shapes fade in
       tl.to(triangleRef.current, { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.1)
         .to(circleRef.current,   { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.25)
-        .to(bracketRef.current,  { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.35)
+        .to(bracketRef.current,  { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.4)
 
-      // Phase 3: SVG lines draw in
-      const lines = linesRef.current?.querySelectorAll('line')
-      if (lines) {
-        lines.forEach((line, i) => {
-          const length = (line as SVGLineElement).getTotalLength
-            ? 2000
-            : 2000
-          line.style.strokeDasharray = `${2000}`
-          line.style.strokeDashoffset = `${2000}`
-          tl.to(line, {
-            strokeDashoffset: 0,
-            duration: 0.6,
-            ease: 'power2.inOut',
-          }, 0.6 + i * 0.05)
-        })
-      }
-
-      // Phase 4: wipe away (split top/bottom)
-      tl.to(topRef.current,    { y: '-100%', duration: 0.6, ease: 'expo.inOut' }, '+=0.8')
-        .to(bottomRef.current, { y: '100%',  duration: 0.6, ease: 'expo.inOut' }, '-=0.6')
-        .to([triangleRef.current, circleRef.current, bracketRef.current], { 
-          scale: 0.8, 
-          opacity: 0, 
-          duration: 0.4, 
-          ease: 'power2.in' 
+      tl.to(topRef.current,    { y: '-100%', duration: 0.7, ease: 'power3.inOut' }, '+=1.8')
+        .to(bottomRef.current, { y: '100%',  duration: 0.7, ease: 'power3.inOut' }, '-=0.7')
+        .to([triangleRef.current, circleRef.current, bracketRef.current], {
+          scale: 0.8,
+          opacity: 0,
+          duration: 0.4,
+          ease: 'power2.in'
         }, '-=0.6')
         .call(() => onComplete(), [], '+=0.1')
     })

@@ -42,6 +42,21 @@
   z-index: 1;
 }
 
+.ghostText {
+  position: absolute;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28vw;
+  color: rgba(255,255,255,0.04);
+  pointer-events: none;
+  line-height: 0.8;
+  text-align: right;
+  z-index: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
+
 .content {
   display: flex;
   align-items: center;
@@ -61,16 +76,16 @@
   flex-shrink: 0;
   position: relative;
   overflow: hidden;
-  transform: perspective(1000px) rotateY(-3deg) rotateX(2deg);
-  transition: transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94),
+  transform: perspective(1200px) rotateY(-5deg) rotateX(2deg);
+  transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94),
               border-color 0.4s ease,
               box-shadow 0.4s ease;
 }
 
 .card:hover {
-  transform: perspective(1000px) rotateY(-2deg) rotateX(1deg) translateY(-8px);
+  transform: perspective(1200px) rotateY(-2deg) rotateX(1deg) translateY(-10px);
   border-color: rgba(255,255,255,0.2);
-  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(123,94,167,0.1);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 60px rgba(109,40,217,0.15);
 }
 
 .cardWatermark {

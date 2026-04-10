@@ -14,6 +14,7 @@ const CrystalH = dynamic(() => import('./CrystalH'), { ssr: false })
 export default function Hero() {
   const crystalRef = useRef<CrystalHRef>(null)
   const [quaternion, setQuaternion] = useState({ x: 0, y: 0, z: 0, w: 1 })
+  const glowRef = useRef<HTMLDivElement>(null)
 
   const handleQuaternionUpdate = useCallback((q: { x: number; y: number; z: number; w: number }) => {
     setQuaternion(q)
@@ -24,17 +25,30 @@ export default function Hero() {
   }, [])
 
   useEffect(() => {
+    const handleCrystalColor = (e: Event) => {
+      const { r, g, b } = (e as CustomEvent).detail
+      if (glowRef.current) {
+        glowRef.current.style.background = `radial-gradient(circle, rgba(${Math.round(r * 255)},${Math.round(g * 255)},${Math.round(b * 255)},0.15) 0%, transparent 70%)`
+      }
+    }
+    window.addEventListener('crystalColor', handleCrystalColor)
+    return () => window.removeEventListener('crystalColor', handleCrystalColor)
+  }, [])
+
+  useEffect(() => {
     import('gsap').then(({ gsap }) => {
       import('gsap/ScrollTrigger').then(({ ScrollTrigger }) => {
         gsap.registerPlugin(ScrollTrigger)
         
-        // Loader entrance timeline
-        const tl = gsap.timeline({ delay: 3.0 }) // after loader
-        tl.from('.hero-name-line-1', { y: 80, opacity: 0, duration: 0.8, ease: 'power3.out' })
-          .from('.hero-name-line-2', { y: 80, opacity: 0, duration: 0.8, ease: 'power3.out' }, '-=0.5')
-          .from('.hero-role', { opacity: 0, duration: 0.5, ease: 'power2.out' }, '-=0.3')
-          .from('.quaternion-panel', { x: 40, opacity: 0, duration: 0.6, ease: 'power2.out' }, '-=0.4')
-          .from('.material-panel', { x: -40, opacity: 0, duration: 0.6, ease: 'power2.out' }, '-=0.5')
+        // Hero entrance animation - simple setTimeout, no scroll trigger
+        setTimeout(() => {
+          gsap.to('.hero-name-line-1', { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out' })
+          gsap.to('.hero-name-line-2', { y: 0, opacity: 1, duration: 0.9, delay: 0.15, ease: 'power3.out' })
+          gsap.to('.hero-role', { opacity: 1, duration: 0.5, ease: 'power2.out' })
+          gsap.to('.crystal-canvas-inner', { scale: 1, opacity: 1, duration: 1.0, ease: 'power3.out' })
+          gsap.to('.quaternion-panel', { x: 0, opacity: 1, duration: 0.7, ease: 'power2.out' })
+          gsap.to('.material-panel', { x: 0, opacity: 1, duration: 0.7, ease: 'power2.out' })
+        }, 500)
 
         // Shrink crystal to corner on scroll to projects
         // We use window as trigger because projects might not be mounted on first run perfectly
@@ -47,10 +61,10 @@ export default function Hero() {
               end: 'top top',
               scrub: true,
               animation: gsap.to(wrapper, {
-                scale: 0.3,
-                x: '35vw', // Move to bottom right corner approximately
-                y: '35vh',
-                opacity: 0.2,
+                scale: 0.2,
+                x: '40vw',
+                y: '40vh',
+                opacity: 0,
                 transformOrigin: 'center center'
               })
             })
@@ -67,8 +81,26 @@ export default function Hero() {
         <PlusMarkers />
       </GridBackground>
 
+      {/* Crystal glow halo */}
+      <div 
+        ref={glowRef}
+        className="crystal-glow"
+        style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '60vw',
+          height: '60vh',
+          pointerEvents: 'none',
+          zIndex: 1,
+          opacity: 0.12,
+          background: 'radial-gradient(circle, rgba(109,40,217,0.15) 0%, transparent 70%)'
+        }}
+      />
+
       {/* Three.js Crystal */}
-      <div className={styles.canvasWrapper} id="crystal-canvas-wrapper">
+      <div className={`${styles.canvasWrapper} crystal-canvas-inner`} id="crystal-canvas-wrapper">
         <CrystalH
           ref={crystalRef}
           onQuaternionUpdate={handleQuaternionUpdate}

@@ -1,36 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap');
 
 :root {
-  /* Backgrounds */
   --color-bg:           #080808;
   --color-bg-panel:     #0f0f0f;
   --color-grid:         #1a1a1a;
   --color-grid-plus:    #2a2a2a;
-
-  /* Text */
   --color-text-primary:   #ffffff;
   --color-text-secondary: #888888;
   --color-text-tertiary:  #444444;
   --color-text-mono:      #aaaaaa;
-
-  /* Accent */
   --color-accent:       #7b5ea7;
   --color-accent-teal:  #2dd4bf;
   --color-accent-gold:  #f59e0b;
-
-  /* UI Elements */
   --color-border:       rgba(255,255,255,0.08);
   --color-border-hover: rgba(255,255,255,0.2);
   --color-tag-bg:       rgba(255,255,255,0.06);
   --color-tag-border:   rgba(255,255,255,0.15);
-
-  /* Crystal / 3D */
   --crystal-color-1:    #6d28d9;
   --crystal-color-2:    #0ea5e9;
   --crystal-color-3:    #f97316;
   --crystal-color-4:    #10b981;
-
-  /* Spacing */
   --space-xs:   8px;
   --space-sm:   16px;
   --space-md:   24px;
@@ -45,38 +34,12 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
- /* ——— Site Decorations (Ghost Text & Labels) ——— */
-.ghost-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(120px, 20vw, 400px);
-  color: rgba(255,255,255,0.02);
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 1;
-  text-transform: uppercase;
-}
-
-.section-label {
-  position: absolute;
-  font-family: 'Space Mono', monospace;
-  font-size: 11px;
-  color: rgba(255,255,255,0.4);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  z-index: 5;
-  pointer-events: none;
-  display: block;
-}
   cursor: none;
 }
 
 html {
   font-size: 16px;
-  scroll-behavior: auto; /* Lenis handles smooth scroll */
+  scroll-behavior: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--color-bg);
@@ -190,23 +153,23 @@ a {
   display: flex;
   align-items: flex-end;
   gap: 3px;
-  height: 20px;
+  height: 18px;
+  opacity: 0.6;
 }
 
 .audio-bars span {
-  width: 3px;
-  background: rgba(255,255,255,0.6);
+  width: 2px;
+  background: white;
   border-radius: 1px;
-  animation: audioBar 1.2s ease-in-out infinite alternate;
 }
 
-.audio-bars span:nth-child(1) { height: 10px; animation-delay: 0s; }
-.audio-bars span:nth-child(2) { height: 18px; animation-delay: 0.2s; }
-.audio-bars span:nth-child(3) { height: 6px;  animation-delay: 0.4s; }
+.audio-bars span:nth-child(1) { height: 8px; animation: audio-bar-anim 0.8s ease-in-out infinite alternate; }
+.audio-bars span:nth-child(2) { height: 16px; animation: audio-bar-anim 1.2s ease-in-out infinite alternate-reverse; }
+.audio-bars span:nth-child(3) { height: 10px; animation: audio-bar-anim 1s ease-in-out infinite alternate; }
 
-@keyframes audioBar {
+@keyframes audio-bar-anim {
   from { transform: scaleY(1); }
-  to   { transform: scaleY(0.3); }
+  to { transform: scaleY(0.4); }
 }
 
 /* ——— Custom Cursor ——— */
@@ -240,27 +203,12 @@ a {
   border-color: rgba(123,94,167,0.8);
 }
 
-/* ——— Audio Bars ——— */
-.audio-bars {
-  display: flex;
-  align-items: flex-end;
-  gap: 3px;
-  height: 18px;
-  opacity: 0.6;
+/* ——— Glitch Animation ——— */
+@keyframes glitch {
+  0%, 90%, 100% { transform: translate(0); clip-path: none; }
+  91% { transform: translate(-2px, 1px); clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%); }
+  93% { transform: translate(2px, -1px); clip-path: polygon(0 33%, 100% 33%, 100% 66%, 0 66%); }
+  95% { transform: translate(-1px, 2px); clip-path: polygon(0 66%, 100% 66%, 100% 100%, 0 100%); }
 }
 
-.audio-bars span {
-  width: 2px;
-  background: white;
-  border-radius: 1px;
-}
-
-.audio-bars span:nth-child(1) { height: 8px; animation: audio-bar-anim 0.8s ease-in-out infinite alternate; }
-.audio-bars span:nth-child(2) { height: 16px; animation: audio-bar-anim 1.2s ease-in-out infinite alternate-reverse; }
-.audio-bars span:nth-child(3) { height: 10px; animation: audio-bar-anim 1s ease-in-out infinite alternate; }
-
-@keyframes audio-bar-anim {
-  from { transform: scaleY(1); }
-  to { transform: scaleY(0.4); }
-}
-
+.glitch { animation: glitch 4s infinite; }

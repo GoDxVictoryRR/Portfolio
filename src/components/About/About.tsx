@@ -15,18 +15,22 @@ export default function About() {
       import('gsap/ScrollTrigger').then(({ ScrollTrigger }) => {
         gsap.registerPlugin(ScrollTrigger)
         const ctx = gsap.context(() => {
-          gsap.from(leftRef.current, {
-            x: -60, opacity: 0, duration: 0.8, ease: 'power3.out',
-            scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' },
-          })
-          gsap.from(rightRef.current, {
-            x: 60, opacity: 0, duration: 0.8, delay: 0.1, ease: 'power3.out',
-            scrollTrigger: { trigger: sectionRef.current, start: 'top 80%' },
-          })
-          // Tags stagger
-          gsap.from('.skill-tag', {
-            y: 15, opacity: 0, stagger: 0.03, duration: 0.4, ease: 'power2.out',
-            scrollTrigger: { trigger: sectionRef.current, start: 'top 70%' },
+          // Set initial hidden state
+          gsap.set(leftRef.current, { opacity: 0, x: -60 })
+          gsap.set(rightRef.current, { opacity: 0, x: 60 })
+          gsap.set('.skill-tag', { opacity: 0, y: 15 })
+          gsap.set('.stat-block-anim', { opacity: 0, y: 20 })
+
+          // ScrollTrigger to reveal
+          ScrollTrigger.create({
+            trigger: sectionRef.current,
+            start: 'top 85%',
+            onEnter: () => {
+              gsap.to(leftRef.current, { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out' })
+              gsap.to(rightRef.current, { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out', delay: 0.15 })
+              gsap.to('.skill-tag', { opacity: 1, y: 0, stagger: 0.03, duration: 0.4, ease: 'power2.out' })
+              gsap.to('.stat-block-anim', { opacity: 1, y: 0, stagger: 0.08, duration: 0.4, ease: 'power2.out' })
+            }
           })
         }, sectionRef)
         return () => ctx.revert()
@@ -51,7 +55,7 @@ export default function About() {
           {/* Stats */}
           <div className={styles.stats}>
             {hero.stats.map((stat, i) => (
-              <div key={i} className={styles.statBlock}>
+              <div key={i} className={`${styles.statBlock} stat-block-anim`}>
                 <span className={`${styles.statValue} font-display`}>{stat.value}</span>
                 <span className={styles.statLabel}>{stat.label}</span>
               </div>

@@ -24,17 +24,36 @@ export default function Experience() {
             Math.floor(self.progress * experience.length)
           )
           setActiveIndex(index)
-          
-          // Smooth parallax for Ghost Text
-          gsap.to('.ghost-text-exp', {
-            y: -self.progress * 200,
-            duration: 0.5,
-            overwrite: 'auto'
-          })
-
-          window.dispatchEvent(new CustomEvent('experienceScroll', { 
-            detail: { progress: self.progress } 
+          window.dispatchEvent(new CustomEvent('experienceScroll', {
+            detail: { progress: self.progress }
           }))
+        }
+      })
+
+      gsap.to('.ghost-text-exp', {
+        y: '-20%',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1
+        }
+      })
+
+      // Set initial hidden state
+      gsap.set(`.${styles.card}`, { opacity: 0, x: -80 })
+      gsap.set(`.${styles.details}`, { opacity: 0, x: 80 })
+      gsap.set(`.${styles.tags} .tag`, { opacity: 0, y: 15 })
+
+      // ScrollTrigger to reveal
+      ScrollTrigger.create({
+        trigger: sectionRef.current,
+        start: 'top 85%',
+        onEnter: () => {
+          gsap.to(`.${styles.card}`, { opacity: 1, x: 0, duration: 1.0, ease: 'power3.out' })
+          gsap.to(`.${styles.details}`, { opacity: 1, x: 0, duration: 0.9, ease: 'power3.out', delay: 0.2 })
+          gsap.to(`.${styles.tags} .tag`, { opacity: 1, y: 0, stagger: 0.04, duration: 0.3, ease: 'power2.out' })
         }
       })
     }, sectionRef)

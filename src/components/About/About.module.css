@@ -23,6 +23,9 @@
   display: flex;
   flex-direction: column;
   gap: 0;
+  opacity: 1;
+  visibility: visible;
+  transform: none;
 }
 
 .colLabel {
@@ -57,6 +60,9 @@
   gap: 6px;
   padding: 0 40px;
   border-right: 1px solid rgba(255,255,255,0.1);
+  opacity: 1;
+  visibility: visible;
+  transform: none;
 }
 
 .statBlock:first-child {
@@ -89,6 +95,9 @@
   border-left: 1px solid rgba(255,255,255,0.15);
   display: flex;
   flex-direction: column;
+  opacity: 1;
+  visibility: visible;
+  transform: none;
 }
 
 .skillGroup {
