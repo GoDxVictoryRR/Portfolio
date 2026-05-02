@@ -58,7 +58,6 @@ export default function BackgroundRoom() {
         preload="auto"
         disablePictureInPicture
         disableRemotePlayback
-        decoding="async"
         onEnded={(e) => {
           const v = e.currentTarget;
           v.currentTime = 0;
