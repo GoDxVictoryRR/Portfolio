@@ -71,4 +71,3 @@ The project follows a standard Next.js App Router architecture with a specialize
 - **Email:** jshivangi86@gmail.com  
 - **LinkedIn:** [linkedin.com/in/hardik-jaiswal](https://linkedin.com/in/hardik-jaiswal)  
 - **GitHub:** [github.com/GoDxVictoryRR](https://github.com/GoDxVictoryRR)  
-- **Phone:** +91-7525017529
