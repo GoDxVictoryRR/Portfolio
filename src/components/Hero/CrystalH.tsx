@@ -1,6 +1,7 @@
 'use client'
-import { useEffect, useRef, useImperativeHandle, forwardRef } from 'react'
+import { useEffect, useRef, useImperativeHandle } from 'react'
 import * as THREE from 'three'
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 
 export interface CrystalHRef {
   updateRoughness: (val: number) => void
@@ -11,6 +12,7 @@ export interface CrystalHRef {
 
 interface CrystalHProps {
   onQuaternionUpdate: (q: { x: number; y: number; z: number; w: number }) => void
+  crystalRef?: React.Ref<CrystalHRef>
 }
 
 function createHGeometry(): THREE.BufferGeometry {
@@ -41,9 +43,9 @@ function createHGeometry(): THREE.BufferGeometry {
     steps: 1,
     depth: 1.2,
     bevelEnabled: true,
-    bevelThickness: 0.08,
-    bevelSize: 0.06,
-    bevelSegments: 4,
+    bevelThickness: 0.15,
+    bevelSize: 0.15,
+    bevelSegments: 1, // Sharp bevels matching reference image
   }
   
   const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings)
@@ -51,90 +53,23 @@ function createHGeometry(): THREE.BufferGeometry {
   return geometry
 }
 
-const vertexShader = `
-  varying vec3 vNormal;
-  varying vec3 vPosition;
-  varying vec3 vViewDir;
-  uniform float uTime;
-
-  void main() {
-    vNormal = normalize(normalMatrix * normal);
-    vPosition = position;
-    vec4 worldPos = modelMatrix * vec4(position, 1.0);
-    vViewDir = normalize(cameraPosition - worldPos.xyz);
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-  }
-`
-
-const fragmentShader = `
-  varying vec3 vNormal;
-  varying vec3 vPosition;
-  varying vec3 vViewDir;
-  uniform float uTime;
-  uniform float uRoughness;
-  uniform float uNoiseScale;
-  uniform vec3 uColor;
-
-  void main() {
-    vec3 normal = normalize(vNormal);
-    vec3 viewDir = normalize(vViewDir);
-    
-    float cosTheta = dot(normal, viewDir);
-    float hue = cosTheta * 2.0 + uTime * 0.12;
-    
-    vec3 col1 = vec3(0.43, 0.16, 0.65);  // purple
-    vec3 col2 = vec3(0.08, 0.64, 0.75);  // teal
-    vec3 col3 = vec3(0.06, 0.73, 0.51);  // green
-    vec3 col4 = vec3(0.97, 0.62, 0.04);  // gold
-    
-    float t = fract(hue);
-    float idx = mod(floor(hue), 4.0);
-    
-    vec3 iridColor;
-    if (idx < 1.0)      iridColor = mix(col1, col2, t);
-    else if (idx < 2.0) iridColor = mix(col2, col3, t);
-    else if (idx < 3.0) iridColor = mix(col3, col4, t);
-    else                iridColor = mix(col4, col1, t);
-    
-    float whiteMix = smoothstep(0.85, 1.0, cosTheta);
-    iridColor = mix(iridColor, vec3(1.0), whiteMix * 0.9);
-    
-    float n = fract(sin(dot(vPosition * uNoiseScale, vec3(12.9898, 78.233, 45.543))) * 43758.5453);
-    float roughMask = mix(1.0, n, uRoughness);
-    
-    vec3 finalColor = iridColor * roughMask;
-    
-    vec3 lightDir = normalize(vec3(0.8, 1.0, 0.5));
-    float streak = pow(max(0.0, dot(reflect(-viewDir, normal), lightDir)), 90.0);
-    vec3 streakColor = vec3(
-      streak * sin(streak * 6.28 + uTime),
-      streak * sin(streak * 6.28 + uTime + 2.09),
-      streak * sin(streak * 6.28 + uTime + 4.19)
-    );
-    finalColor += streakColor * 1.8;
-    
-    if (!gl_FrontFacing) {
-      finalColor *= 0.35;
-    }
-    
-    gl_FragColor = vec4(finalColor, 0.82);
-  }
-`
-
-const CrystalH = forwardRef<CrystalHRef, CrystalHProps>(({ onQuaternionUpdate }, ref) => {
+const CrystalH = ({ onQuaternionUpdate, crystalRef }: CrystalHProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const materialRef = useRef<THREE.ShaderMaterial | null>(null)
+  const materialRef = useRef<THREE.MeshPhysicalMaterial | null>(null)
   const rafRef = useRef<number>(0)
+  const meshRef = useRef<THREE.Mesh | null>(null)
 
-  useImperativeHandle(ref, () => ({
+  useImperativeHandle(crystalRef, () => ({
     updateRoughness: (val) => {
-      if (materialRef.current) materialRef.current.uniforms.uRoughness.value = val
+      if (materialRef.current) materialRef.current.roughness = val
     },
     updateNoiseScale: (val) => {
-      if (materialRef.current) materialRef.current.uniforms.uNoiseScale.value = val
+      // Noise scale no longer applies to pure physical glass, mapped to clearcoat roughness
+      if (materialRef.current) materialRef.current.clearcoatRoughness = val * 0.1
     },
     updateColor: (hex) => {
-      if (materialRef.current) materialRef.current.uniforms.uColor.value.set(hex)
+      // Color tint for the glass
+      if (materialRef.current) materialRef.current.color.set(hex)
     },
     resetQuaternion: () => {
       if (meshRef.current) {
@@ -143,8 +78,6 @@ const CrystalH = forwardRef<CrystalHRef, CrystalHProps>(({ onQuaternionUpdate },
       }
     },
   }))
-
-  const meshRef = useRef<THREE.Mesh | null>(null)
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -164,7 +97,7 @@ const CrystalH = forwardRef<CrystalHRef, CrystalHProps>(({ onQuaternionUpdate },
     renderer.setSize(width, height)
     renderer.setClearColor(0x000000, 0)
     renderer.toneMapping = THREE.ACESFilmicToneMapping
-    renderer.toneMappingExposure = 1.2
+    renderer.toneMappingExposure = 1.6 // Boosted for brighter crystal reflections
 
     // Camera
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100)
@@ -173,35 +106,37 @@ const CrystalH = forwardRef<CrystalHRef, CrystalHProps>(({ onQuaternionUpdate },
     // Scene
     const scene = new THREE.Scene()
 
+    // Generate a bright RoomEnvironment for sharp reflections
+    const pmremGenerator = new THREE.PMREMGenerator(renderer)
+    const roomEnv = pmremGenerator.fromScene(new RoomEnvironment()).texture
+    scene.environment = roomEnv
+
     // Lights
-    const ambient = new THREE.AmbientLight(0x111111, 0.8)
+    const ambient = new THREE.AmbientLight(0xffffff, 0.8)
     scene.add(ambient)
 
-    const purpleLight = new THREE.DirectionalLight(0x7b5ea7, 3)
-    purpleLight.position.set(5, 5, 5)
-    scene.add(purpleLight)
+    const keyLight = new THREE.DirectionalLight(0xffffff, 5) // Much brighter
+    keyLight.position.set(5, 5, 5)
+    scene.add(keyLight)
 
-    const tealLight = new THREE.PointLight(0x2dd4bf, 5, 20)
-    tealLight.position.set(-5, 3, 3)
-    scene.add(tealLight)
+    const fillLight = new THREE.PointLight(0xaa88ff, 3, 20) // Subtle purple fill light to blend with background
+    fillLight.position.set(-5, -3, 3)
+    scene.add(fillLight)
 
-    const goldLight = new THREE.PointLight(0xf59e0b, 3, 20)
-    goldLight.position.set(4, -3, 4)
-    scene.add(goldLight)
-
-    // Material
-    const material = new THREE.ShaderMaterial({
-      vertexShader,
-      fragmentShader,
-      uniforms: {
-        uTime:       { value: 0 },
-        uRoughness:  { value: 0.10 },
-        uNoiseScale: { value: 9.0 },
-        uColor:      { value: new THREE.Color(1, 1, 1) },
-      },
+    // Ultra-Premium Glass Material
+    const material = new THREE.MeshPhysicalMaterial({
+      color: 0xffffff,
+      metalness: 1.0,       // Maximum reflectivity
+      roughness: 0.0,       // Mirror-smooth
+      opacity: 0.1,         // Ultra transparent faces so the DOM video pops
       transparent: true,
-      depthWrite: false,
+      envMapIntensity: 6.0, // Blindingly bright reflections on the bevels
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.0,
+      iridescence: 1.0,     // Adds hyper-realistic chromatic/rainbow dispersion on edges!
+      iridescenceIOR: 1.3,
       side: THREE.DoubleSide,
+      depthWrite: false,
     })
     materialRef.current = material
 
@@ -223,8 +158,6 @@ const CrystalH = forwardRef<CrystalHRef, CrystalHProps>(({ onQuaternionUpdate },
     // Animation loop
     function animate(time: number) {
       rafRef.current = requestAnimationFrame(animate)
-
-      material.uniforms.uTime.value = time * 0.001
 
       if (isDragging) {
         // Dragging handled in mouse event
@@ -251,19 +184,8 @@ const CrystalH = forwardRef<CrystalHRef, CrystalHProps>(({ onQuaternionUpdate },
         mesh.rotation.x += mouseInfluence.y * 0.008
       }
 
-      tealLight.position.x = Math.sin(time * 0.0003) * 6
-      goldLight.position.y = Math.cos(time * 0.0004) * 4
-
       const q = mesh.quaternion
       onQuaternionUpdate({ x: q.x, y: q.y, z: q.z, w: q.w })
-
-      const tIrid = (time * 0.001 * 0.15) % 1
-      const idxIrid = Math.floor(tIrid * 4)
-      const remainderIrid = (tIrid * 4) - idxIrid
-      const colA = new THREE.Color(['#6d28d9', '#0ea5e9', '#10b981', '#f59e0b'][idxIrid % 4])
-      const colB = new THREE.Color(['#6d28d9', '#0ea5e9', '#10b981', '#f59e0b'][(idxIrid + 1) % 4])
-      const cFinal = colA.lerp(colB, remainderIrid)
-      window.dispatchEvent(new CustomEvent('crystalColor', { detail: { r: cFinal.r, g: cFinal.g, b: cFinal.b } }))
 
       renderer.render(scene, camera)
     }
@@ -355,7 +277,7 @@ const CrystalH = forwardRef<CrystalHRef, CrystalHProps>(({ onQuaternionUpdate },
       }}
     />
   )
-})
+}
 
 CrystalH.displayName = 'CrystalH'
 export default CrystalH

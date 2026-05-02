@@ -11,7 +11,11 @@ import type { CrystalHRef } from './CrystalH'
 
 const CrystalH = dynamic(() => import('./CrystalH'), { ssr: false })
 
-export default function Hero() {
+interface HeroProps {
+  isReady?: boolean;
+}
+
+export default function Hero({ isReady = true }: HeroProps) {
   const crystalRef = useRef<CrystalHRef>(null)
   const [quaternion, setQuaternion] = useState({ x: 0, y: 0, z: 0, w: 1 })
   const glowRef = useRef<HTMLDivElement>(null)
@@ -36,11 +40,13 @@ export default function Hero() {
   }, [])
 
   useEffect(() => {
+    if (!isReady) return;
+
     import('gsap').then(({ gsap }) => {
       import('gsap/ScrollTrigger').then(({ ScrollTrigger }) => {
         gsap.registerPlugin(ScrollTrigger)
         
-        // Hero entrance animation - simple setTimeout, no scroll trigger
+        // Hero entrance animation - wait a tiny bit after loader completes
         setTimeout(() => {
           gsap.to('.hero-name-line-1', { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out' })
           gsap.to('.hero-name-line-2', { y: 0, opacity: 1, duration: 0.9, delay: 0.15, ease: 'power3.out' })
@@ -48,7 +54,7 @@ export default function Hero() {
           gsap.to('.crystal-canvas-inner', { scale: 1, opacity: 1, duration: 1.0, ease: 'power3.out' })
           gsap.to('.quaternion-panel', { x: 0, opacity: 1, duration: 0.7, ease: 'power2.out' })
           gsap.to('.material-panel', { x: 0, opacity: 1, duration: 0.7, ease: 'power2.out' })
-        }, 500)
+        }, 100)
 
         // Shrink crystal to corner on scroll to projects
         // We use window as trigger because projects might not be mounted on first run perfectly
@@ -69,10 +75,10 @@ export default function Hero() {
               })
             })
           }
-        }, 1000)
+        }, 500)
       })
     })
-  }, [])
+  }, [isReady])
 
   return (
     <section id="hero" className={styles.hero}>
@@ -102,7 +108,7 @@ export default function Hero() {
       {/* Three.js Crystal */}
       <div className={`${styles.canvasWrapper} crystal-canvas-inner`} id="crystal-canvas-wrapper">
         <CrystalH
-          ref={crystalRef}
+          crystalRef={crystalRef}
           onQuaternionUpdate={handleQuaternionUpdate}
         />
       </div>

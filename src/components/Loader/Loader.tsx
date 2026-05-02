@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import styles from './Loader.module.css'
 
 interface LoaderProps {
@@ -7,61 +7,111 @@ interface LoaderProps {
 }
 
 export default function Loader({ onComplete }: LoaderProps) {
-  const topRef = useRef<HTMLDivElement>(null)
-  const bottomRef = useRef<HTMLDivElement>(null)
-  const triangleRef = useRef<HTMLDivElement>(null)
-  const circleRef = useRef<HTMLDivElement>(null)
-  const bracketRef = useRef<HTMLDivElement>(null)
-  const linesRef = useRef<SVGSVGElement>(null)
+  const [progress, setProgress] = useState(0)
+  const loaderRef = useRef<HTMLDivElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const pathRef = useRef<SVGPathElement>(null)
 
   useEffect(() => {
+    let ctx = { current: 0 }
+
     import('gsap').then(({ gsap }) => {
       const tl = gsap.timeline()
 
-      tl.to(triangleRef.current, { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.1)
-        .to(circleRef.current,   { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.25)
-        .to(bracketRef.current,  { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.4)
+      // 1. Trace the SVG line and cycle stroke colors
+      tl.to(pathRef.current, {
+        strokeDashoffset: 0,
+        duration: 3.5,
+        ease: 'power2.inOut',
+      }, 0)
 
-      tl.to(topRef.current,    { y: '-100%', duration: 0.7, ease: 'power3.inOut' }, '+=1.8')
-        .to(bottomRef.current, { y: '100%',  duration: 0.7, ease: 'power3.inOut' }, '-=0.7')
-        .to([triangleRef.current, circleRef.current, bracketRef.current], {
-          scale: 0.8,
-          opacity: 0,
-          duration: 0.4,
-          ease: 'power2.in'
-        }, '-=0.6')
-        .call(() => onComplete(), [], '+=0.1')
+      tl.to(pathRef.current, {
+        keyframes: {
+          stroke: ['#3b82f6', '#ffffff', '#ec4899', '#a855f7', '#6d28d9', '#ffffff'],
+          easeEach: 'power1.inOut'
+        },
+        duration: 3.5,
+        ease: 'none',
+      }, 0)
+
+      // 2. Rotate the entire SVG container in 3D space as it draws
+      tl.to(containerRef.current, {
+        rotateY: 360,
+        rotateX: 10,
+        duration: 3.5,
+        ease: 'power1.inOut'
+      }, 0)
+
+      // 3. Counter Animation
+      tl.to(ctx, {
+        current: 100,
+        duration: 3.5,
+        ease: 'power2.inOut',
+        onUpdate: () => {
+          setProgress(Math.round(ctx.current))
+        }
+      }, 0)
+
+      // 4. Holographic Pulse & Fly-Through
+      // Pulse the width and rapidly cycle the stroke color through the requested sequence
+      tl.to(pathRef.current, {
+        strokeWidth: 8,
+        keyframes: {
+          stroke: ['#3b82f6', '#ffffff', '#ec4899', '#a855f7', '#6d28d9', '#ffffff'],
+          easeEach: 'power1.inOut'
+        },
+        duration: 0.8,
+        ease: 'power2.inOut'
+      }, 3.5)
+
+      tl.to(containerRef.current, {
+        scale: 15,
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power3.in'
+      }, 3.6)
+
+      // 5. Smoothly fade out the black background to reveal the site
+      tl.to(loaderRef.current, {
+        opacity: 0,
+        duration: 0.8,
+        ease: 'power2.inOut'
+      }, 3.7)
+
+      tl.call(() => onComplete(), [], '+=0.1')
     })
   }, [onComplete])
 
   return (
-    <div className={styles.loader}>
-      {/* Top half */}
-      <div ref={topRef} className={styles.loaderTop}>
-        <svg ref={linesRef} className={styles.lines} width="100%" height="100%" preserveAspectRatio="none">
-          <line x1="10%"  y1="0%"   x2="40%"  y2="100%" stroke="rgba(255,255,255,0.07)" strokeWidth="1"/>
-          <line x1="20%"  y1="0%"   x2="55%"  y2="100%" stroke="rgba(255,255,255,0.05)" strokeWidth="1"/>
-          <line x1="35%"  y1="0%"   x2="70%"  y2="100%" stroke="rgba(255,255,255,0.07)" strokeWidth="1"/>
-          <line x1="50%"  y1="0%"   x2="85%"  y2="100%" stroke="rgba(255,255,255,0.05)" strokeWidth="1"/>
-          <line x1="65%"  y1="0%"   x2="100%" y2="80%"  stroke="rgba(255,255,255,0.06)" strokeWidth="1"/>
-          <line x1="80%"  y1="0%"   x2="100%" y2="50%"  stroke="rgba(255,255,255,0.04)" strokeWidth="1"/>
-          <line x1="0%"   y1="20%"  x2="30%"  y2="100%" stroke="rgba(255,255,255,0.05)" strokeWidth="1"/>
-          <line x1="90%"  y1="0%"   x2="60%"  y2="100%" stroke="rgba(255,255,255,0.06)" strokeWidth="1"/>
-          <line x1="100%" y1="30%"  x2="70%"  y2="100%" stroke="rgba(255,255,255,0.04)" strokeWidth="1"/>
+    <div className={styles.loader} ref={loaderRef}>
+      
+      {/* Subtle geometric background */}
+      <div className={styles.bgGrid} />
+
+      {/* 3D Rotating Container */}
+      <div className={styles.hologramContainer} ref={containerRef}>
+        
+        {/* Massive custom "H" SVG */}
+        <svg 
+          viewBox="0 0 100 120" 
+          className={styles.hologramSvg}
+          preserveAspectRatio="xMidYMid meet"
+        >
+          <path 
+            ref={pathRef}
+            className={styles.hologramPath}
+            d="M 0 0 L 30 0 L 30 45 L 70 45 L 70 0 L 100 0 L 100 120 L 70 120 L 70 75 L 30 75 L 30 120 L 0 120 Z"
+          />
         </svg>
 
-        {/* Triangle — bottom-left */}
-        <div ref={triangleRef} className={styles.triangle} />
+        {/* Minimal Progress Counter */}
+        <div className={styles.counterContainer}>
+          <div className={styles.counter}>{progress.toString().padStart(3, '0')}</div>
+          <div className={styles.counterLabel}>SYNC</div>
+        </div>
 
-        {/* Dashed circle — center */}
-        <div ref={circleRef} className={styles.circle} />
-
-        {/* L-bracket — top-right */}
-        <div ref={bracketRef} className={styles.bracket} />
       </div>
 
-      {/* Bottom half */}
-      <div ref={bottomRef} className={styles.loaderBottom} />
     </div>
   )
 }

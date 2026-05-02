@@ -16,7 +16,7 @@ export default function Home() {
     <main>
       {isLoading && <Loader onComplete={() => setIsLoading(false)} />}
       <Nav />
-      <Hero />
+      <Hero isReady={!isLoading} />
       <About />
       <Marquee />
       <Projects />

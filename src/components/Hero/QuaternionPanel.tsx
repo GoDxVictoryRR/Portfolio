@@ -24,7 +24,7 @@ function fmt(n: number): string {
 
 export default function QuaternionPanel({ quaternion, onReset }: QuaternionPanelProps) {
   return (
-    <div className={styles.quaternionPanel}>
+    <div className={styles.quaternionPanel} suppressHydrationWarning>
       <div className={styles.panelHeader}>
         <span>MainLogo Quaternion</span>
         <span className={styles.pauseIcon}>❙❙</span>
@@ -47,7 +47,7 @@ export default function QuaternionPanel({ quaternion, onReset }: QuaternionPanel
       </div>
       {/* Arcball widget embedded below */}
       <ArcballWidget quaternion={quaternion} />
-      <button className={styles.resetBtn} onClick={onReset}>
+      <button className={styles.resetBtn} onClick={onReset} suppressHydrationWarning>
         Reset Quaternion
       </button>
     </div>
