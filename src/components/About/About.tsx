@@ -13,6 +13,7 @@ export default function About() {
     import('gsap').then(({ gsap }) => {
       import('gsap/ScrollTrigger').then(({ ScrollTrigger }) => {
         gsap.registerPlugin(ScrollTrigger)
+        const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches
         let splitBio: SplitType | null = null;
         const ctx = gsap.context(() => {
 
@@ -20,10 +21,7 @@ export default function About() {
           splitBio = new SplitType('.about-bio-text', { types: 'words,chars' })
 
           if (splitBio.chars) {
-            gsap.set(splitBio.chars, {
-              y: 20,
-              opacity: 0,
-            })
+            gsap.set(splitBio.chars, { y: 20, opacity: 0 })
             ScrollTrigger.create({
               trigger: '.about-bio-wrapper',
               start: 'top 85%',
@@ -35,6 +33,9 @@ export default function About() {
                   duration: 0.5,
                   ease: 'back.out(2)'
                 })
+              },
+              onLeaveBack: () => {
+                gsap.to(splitBio?.chars || [], { y: 20, opacity: 0, duration: 0.3 })
               }
             })
           }
@@ -64,7 +65,10 @@ export default function About() {
           })
 
           // --- SKILL TAGS: Stagger from center outward ---
-          gsap.set('.skill-tag', { opacity: 0, scale: 0.8, y: 12 })
+          // On mobile, skip the scale/opacity init — it can bleed into adjacent sections
+          if (!isTouchDevice) {
+            gsap.set('.skill-tag', { opacity: 0, scale: 0.8, y: 12 })
+          }
           ScrollTrigger.create({
             trigger: '.about-skills-wrapper',
             start: 'top 85%',
@@ -73,30 +77,37 @@ export default function About() {
                 opacity: 1,
                 scale: 1,
                 y: 0,
-                stagger: {
-                  each: 0.04,
-                  from: 'center'
-                },
+                stagger: { each: 0.04, from: 'center' },
                 duration: 0.5,
                 ease: 'back.out(1.4)'
               })
+            },
+            onLeaveBack: () => {
+              if (!isTouchDevice) {
+                gsap.to('.skill-tag', { opacity: 0, scale: 0.8, y: 12, duration: 0.3 })
+              }
             }
           })
 
-          // --- RIGHT COLUMN: Slide in from right ---
-          gsap.set('.about-right-col', { x: 60, opacity: 0 })
-          ScrollTrigger.create({
-            trigger: '.about-skills-wrapper',
-            start: 'top 85%',
-            onEnter: () => {
-              gsap.to('.about-right-col', {
-                x: 0,
-                opacity: 1,
-                duration: 1.0,
-                ease: 'power3.out',
-              })
-            }
-          })
+          // --- RIGHT COLUMN: Slide in from right (desktop only) ---
+          if (!isTouchDevice) {
+            gsap.set('.about-right-col', { x: 60, opacity: 0 })
+            ScrollTrigger.create({
+              trigger: '.about-skills-wrapper',
+              start: 'top 85%',
+              onEnter: () => {
+                gsap.to('.about-right-col', {
+                  x: 0,
+                  opacity: 1,
+                  duration: 1.0,
+                  ease: 'power3.out',
+                })
+              },
+              onLeaveBack: () => {
+                gsap.to('.about-right-col', { x: 60, opacity: 0, duration: 0.3 })
+              }
+            })
+          }
 
         }, sectionRef)
         return () => {

@@ -14,15 +14,19 @@ export default function Home() {
   useEffect(() => {
     if (isLoading) return
 
+    const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches
+    // Skip all scroll-linked scale/clip-path transforms on mobile.
+    // CSS transforms on ancestor elements break position:fixed children on Android
+    // and cause the scroll compositor to lock up.
+    if (isTouchDevice) return
+
     import('gsap').then(({ gsap }) => {
       import('gsap/ScrollTrigger').then(({ ScrollTrigger }) => {
         gsap.registerPlugin(ScrollTrigger)
 
-        // Dramatic section entrance: each section blasts in from below + slight scale
         const sections = gsap.utils.toArray<HTMLElement>('section[data-section]')
 
         sections.forEach((section) => {
-          // Clip-path wipe reveal: sections slide up into view like a curtain lifting
           gsap.fromTo(section,
             {
               clipPath: 'inset(8% 2% 0% 2% round 24px)',
