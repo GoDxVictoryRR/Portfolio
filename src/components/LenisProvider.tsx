@@ -27,6 +27,7 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
       gsap.registerPlugin(ScrollTrigger)
 
       ScrollTrigger.config({ ignoreMobileResize: true })
+      ScrollTrigger.normalizeScroll(true)
 
       lenis.on('scroll', ScrollTrigger.update)
 

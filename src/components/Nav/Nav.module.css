@@ -86,3 +86,27 @@
   background: rgba(255,255,255,0.08);
   border-color: rgba(255,255,255,0.8);
 }
+
+/* ——— Responsive ——— */
+@media (max-width: 768px) {
+  .nav {
+    padding: 0 16px;
+  }
+  .logo {
+    font-size: 14px;
+    letter-spacing: 0.05em;
+  }
+  .logo svg {
+    display: none; /* Hide icon on mobile to save space */
+  }
+  .links {
+    gap: 12px;
+  }
+  .link {
+    font-size: 11px;
+    letter-spacing: 0;
+  }
+  .right {
+    display: none; /* Hide CTA and audio bars on mobile */
+  }
+}
