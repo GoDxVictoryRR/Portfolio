@@ -23,9 +23,6 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  opacity: 1;
-  visibility: visible;
-  transform: none;
 }
 
 .colLabel {
@@ -37,6 +34,31 @@
   display: block;
 }
 
+/* Bio wrapper — overflow hidden so lines clip correctly */
+.bioWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 40px;
+}
+
+.lineOuter {
+  overflow: hidden; /* Masks the y-translate reveal */
+  padding-bottom: 2px;
+}
+
+.bioLine {
+  font-family: var(--font-mono), 'DM Mono', monospace;
+  font-size: 17px;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.9;
+  max-width: 580px;
+  letter-spacing: -0.01em;
+  margin: 0;
+  /* transform/opacity set by GSAP */
+}
+
+/* Legacy .bio class (keep for safety) */
 .bio {
   font-family: var(--font-mono), 'DM Mono', monospace;
   font-size: 17px;
@@ -60,9 +82,6 @@
   gap: 6px;
   padding: 0 40px;
   border-right: 1px solid rgba(255,255,255,0.1);
-  opacity: 1;
-  visibility: visible;
-  transform: none;
 }
 
 .statBlock:first-child {
@@ -95,9 +114,6 @@
   border-left: 1px solid rgba(255,255,255,0.15);
   display: flex;
   flex-direction: column;
-  opacity: 1;
-  visibility: visible;
-  transform: none;
 }
 
 .skillGroup {

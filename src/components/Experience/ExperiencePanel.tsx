@@ -1,6 +1,5 @@
 'use client'
 import { useRef, useEffect } from 'react'
-import CurvedCanvas from '@/components/shared/CurvedCanvas'
 import styles from './Experience.module.css'
 
 interface Exp {
@@ -28,15 +27,18 @@ export default function ExperiencePanel({ exp }: { exp: Exp }) {
       import('gsap/ScrollTrigger').then(({ ScrollTrigger }) => {
         gsap.registerPlugin(ScrollTrigger)
         const ctx = gsap.context(() => {
-          gsap.from(cardRef.current, {
-            x: -80, opacity: 0, rotateY: -12,
-            duration: 0.9, ease: 'power3.out',
-            scrollTrigger: { trigger: panelRef.current, start: 'top 70%' },
-          })
-          gsap.from(detailRef.current, {
-            x: 60, opacity: 0, duration: 0.8, delay: 0.15, ease: 'power3.out',
-            scrollTrigger: { trigger: panelRef.current, start: 'top 70%' },
-          })
+          gsap.fromTo(cardRef.current, 
+            { x: -80, opacity: 0, rotateY: -12 },
+            { x: 0, opacity: 1, rotateY: 0, duration: 0.9, ease: 'power3.out',
+              scrollTrigger: { trigger: panelRef.current, start: 'top 75%' }
+            }
+          )
+          gsap.fromTo(detailRef.current,
+            { x: 60, opacity: 0 },
+            { x: 0, opacity: 1, duration: 0.8, delay: 0.15, ease: 'power3.out',
+              scrollTrigger: { trigger: panelRef.current, start: 'top 75%' }
+            }
+          )
           gsap.fromTo(panelRef.current!.querySelector('.ghost-text'),
             { y: '50%' },
             { y: '-50%', scrollTrigger: { trigger: panelRef.current, start: 'top bottom', end: 'bottom top', scrub: 1 } }
@@ -54,8 +56,8 @@ export default function ExperiencePanel({ exp }: { exp: Exp }) {
 
       <div className={styles.content}>
         {/* Left: card panel */}
-        <div ref={cardRef} className={styles.card}>
-          <CurvedCanvas title={exp.company} imageGradient={exp.imageGradient} />
+        <div ref={cardRef} className={styles.card} style={{ background: exp.imageGradient }}>
+          <div className={styles.cardBorder} />
           <span className={styles.cardWatermark}>{exp.company.toUpperCase()}</span>
           <div className={styles.cardInner}>
             <span className={`${styles.cardRole} font-display`}>{exp.role}</span>

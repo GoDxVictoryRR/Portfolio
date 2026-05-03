@@ -107,7 +107,7 @@ export const experience = [
     ],
     tags: ['tensorflow', 'cnn', 'python', 'ml_pipeline', 'azure'],
     accentColor: '#1a1200',
-    imageGradient: 'linear-gradient(135deg, #1a1200 0%, #0d1a0d 50%, #0a0a0a 100%)',
+    imageGradient: 'linear-gradient(135deg, #2a1f10 0%, #171109 50%, #0a0a0a 100%)',
   },
   {
     id: 'microsoft-aicte',
@@ -125,7 +125,7 @@ export const experience = [
     ],
     tags: ['azure_ai', 'neural_networks', 'computer_vision', 'generative_ai', 'microsoft_learn'],
     accentColor: '#001a33',
-    imageGradient: 'linear-gradient(135deg, #001a33 0%, #0d0d1a 50%, #0a0a0a 100%)',
+    imageGradient: 'linear-gradient(135deg, #102a43 0%, #0a192f 50%, #0a0a0a 100%)',
   },
 ]
 

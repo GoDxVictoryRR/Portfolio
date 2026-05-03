@@ -20,7 +20,7 @@
   z-index: 0;
 }
 
-/* Geometric shapes — echoing loader */
+/* Geometric shapes */
 .triangle {
   position: absolute;
   left: 8vw;
@@ -29,7 +29,7 @@
   height: 0;
   border-left: 60px solid transparent;
   border-right: 60px solid transparent;
-  border-bottom: 105px solid rgba(255,255,255,0.06);
+  border-bottom: 105px solid rgba(255,255,255,0.05);
   z-index: 1;
 }
 
@@ -39,7 +39,7 @@
   top: 35vh;
   width: 140px;
   height: 140px;
-  border: 1.5px dashed rgba(255,255,255,0.2);
+  border: 1px dashed rgba(255,255,255,0.15);
   border-radius: 50%;
   z-index: 1;
 }
@@ -50,8 +50,8 @@
   top: 40vh;
   width: 70px;
   height: 44px;
-  border-top: 1px solid rgba(255,255,255,0.15);
-  border-right: 1px solid rgba(255,255,255,0.15);
+  border-top: 1px solid rgba(255,255,255,0.12);
+  border-right: 1px solid rgba(255,255,255,0.12);
   z-index: 1;
 }
 
@@ -65,24 +65,49 @@
   text-align: center;
 }
 
+/* Parallax wrapper for the heading */
+.headingWrap {
+  will-change: transform;
+  margin-bottom: 0;
+}
+
+/* The heading — inline character layout */
 .heading {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(70px, 13vw, 190px);
+  font-size: clamp(72px, 13vw, 200px);
   color: #ffffff;
-  -webkit-text-fill-color: #ffffff;
-  letter-spacing: -0.02em;
-  line-height: 0.85;
+  letter-spacing: 0.02em;
+  line-height: 1;
   text-align: center;
-  margin-bottom: 48px;
+  margin-bottom: 40px;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: baseline;
+}
+
+/* Clip mask — overflow hidden hides the rising char */
+.charOuter {
+  display: inline-block;
+  overflow: hidden;
+  line-height: 1.05;
+  /* Space chars keep their natural width */
+}
+
+/* The actual character that moves */
+.charInner {
+  display: inline-block;
+  /* y set and animated by GSAP */
+  will-change: transform;
 }
 
 .subheading {
   font-family: 'DM Mono', monospace;
-  font-size: 15px;
+  font-size: 14px;
   color: rgba(255,255,255,0.35);
-  margin-bottom: 64px;
-  max-width: 480px;
-  line-height: 1.7;
+  margin-bottom: 56px;
+  max-width: 440px;
+  line-height: 1.8;
 }
 
 .links {
@@ -96,26 +121,27 @@
 
 .contactLink {
   font-family: 'Space Mono', monospace;
-  font-size: 18px;
-  color: rgba(255,255,255,0.6);
+  font-size: 16px;
+  color: rgba(255,255,255,0.55);
   text-decoration: none;
-  transition: color 0.2s ease;
   position: relative;
+  transition: color 0.25s ease;
 }
 
 .contactLink:hover {
   color: #ffffff;
 }
 
+/* Animated underline sweep */
 .contactLink::after {
   content: '';
   position: absolute;
-  bottom: -2px;
+  bottom: -3px;
   left: 0;
   width: 0;
   height: 1px;
-  background: rgba(255,255,255,0.4);
-  transition: width 0.25s ease;
+  background: linear-gradient(90deg, #a855f7, #ec4899);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .contactLink:hover::after {
@@ -130,7 +156,7 @@
   text-align: center;
   font-family: 'Space Mono', monospace;
   font-size: 11px;
-  color: rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.18);
   letter-spacing: 0.15em;
   z-index: 2;
 }

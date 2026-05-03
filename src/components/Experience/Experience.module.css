@@ -1,55 +1,23 @@
-.carouselSection {
+.expSection {
   position: relative;
   height: 100vh;
   width: 100%;
-  background: transparent;
-  overflow: hidden;
   display: flex;
   align-items: center;
-}
-
-.experienceContent {
-  display: flex;
-  width: 100%;
-  height: 100%;
-  padding: 0 80px;
-  z-index: 2;
-}
-
-.panelSpace {
-  width: 55%;
-  height: 100%;
-}
-
-.details {
-  width: 45%;
-  display: flex;
-  flex-direction: column;
   justify-content: center;
-  padding-left: 40px;
-}
-
-.stylizedLabel {
-  position: absolute;
-  top: 80px;
-  right: 40px;
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 80px;
-  color: rgba(255,255,255,0.03);
-  pointer-events: none;
-  line-height: 0.8;
-  text-align: right;
-  z-index: 1;
+  padding: 0 10vw;
+  overflow: hidden;
+  background: transparent;
 }
 
 .ghostText {
   position: absolute;
   font-family: 'Bebas Neue', sans-serif;
   font-size: 28vw;
-  color: rgba(255,255,255,0.04);
+  color: rgba(255,255,255,0.03);
   pointer-events: none;
   line-height: 0.8;
-  text-align: right;
+  text-align: center;
   z-index: 0;
   top: 50%;
   left: 50%;
@@ -59,95 +27,112 @@
 
 .content {
   display: flex;
-  align-items: center;
-  padding: 0 80px;
-  gap: 60px;
   width: 100%;
+  max-width: 1400px;
+  gap: 80px;
+  align-items: center;
   position: relative;
   z-index: 2;
 }
 
-/* ——— Card Panel ——— */
+/* ——— Card (Left Side) ——— */
 .card {
   width: 55%;
-  height: 60vh;
+  height: 65vh;
   border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 4px;
-  flex-shrink: 0;
+  border-radius: 8px;
   position: relative;
   overflow: hidden;
-  transform: perspective(1200px) rotateY(-5deg) rotateX(2deg);
-  transition: transform 0.5s cubic-bezier(0.25,0.46,0.45,0.94),
+  transform: perspective(1000px) rotateY(18deg) rotateX(4deg);
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94),
               border-color 0.4s ease,
               box-shadow 0.4s ease;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .card:hover {
-  transform: perspective(1200px) rotateY(-2deg) rotateX(1deg) translateY(-10px);
-  border-color: rgba(255,255,255,0.2);
-  box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 60px rgba(109,40,217,0.15);
+  transform: perspective(1000px) rotateY(8deg) rotateX(2deg) translateY(-8px) translateZ(30px);
+  border-color: rgba(255,255,255,0.25);
+  box-shadow: -20px 30px 80px rgba(0,0,0,0.7), -10px 0 60px rgba(109,40,217,0.2);
+}
+
+.cardBorder {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.06) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .cardWatermark {
   position: absolute;
-  top: 20px;
-  left: 24px;
+  top: 40px;
+  left: 40px;
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 80px;
+  font-size: clamp(40px, 6vw, 90px);
   color: rgba(255,255,255,0.06);
   letter-spacing: -0.02em;
   pointer-events: none;
   user-select: none;
-  line-height: 1;
+  line-height: 0.85;
+  z-index: 2;
+  white-space: pre-wrap;
+  max-width: 80%;
 }
 
 .cardInner {
   position: absolute;
-  bottom: 24px;
-  left: 24px;
-  right: 24px;
+  inset: 0;
+  padding: 40px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  justify-content: flex-end; /* Align content to bottom */
+  z-index: 3;
+  pointer-events: none;
 }
 
 .cardRole {
   font-family: 'Bebas Neue', sans-serif;
   font-size: 32px;
   color: #ffffff;
-  display: block;
+  margin-bottom: 8px;
+  letter-spacing: 0.02em;
 }
 
 .cardDate {
   font-family: 'Space Mono', monospace;
   font-size: 11px;
   color: rgba(255,255,255,0.4);
+  margin-bottom: 16px;
 }
 
 .cardBullets {
   list-style: none;
   padding: 0;
+  margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
 .cardBullets li {
   font-family: 'DM Mono', monospace;
-  font-size: 12px;
-  color: rgba(255,255,255,0.45);
-  line-height: 1.5;
-  padding-left: 0;
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.6;
+  position: relative;
+  /* Removed bullet dots to match screenshot */
 }
 
 .cardTags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 6px;
+  display: none; /* Hide tags in card to match screenshot */
 }
 
-/* ——— Details ——— */
+/* ——— Details (Right Side) ——— */
 .details {
   flex: 1;
   display: flex;
@@ -157,16 +142,15 @@
 
 .companyLabel {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(20px, 2.5vw, 32px);
-  color: rgba(255,255,255,0.9);
-  letter-spacing: 0.05em;
-  display: block;
-  margin-bottom: 8px;
+  font-size: clamp(40px, 5vw, 64px);
+  color: rgba(255,255,255,0.1);
+  line-height: 0.85;
+  margin-bottom: 12px;
 }
 
 .role {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(48px, 6vw, 80px);
+  font-size: clamp(48px, 6vw, 72px);
   color: #ffffff;
   line-height: 0.95;
   margin-bottom: 8px;
@@ -182,35 +166,34 @@
 .description {
   font-family: 'DM Mono', monospace;
   font-size: 14px;
-  color: rgba(255,255,255,0.5);
+  color: rgba(255,255,255,0.6);
   line-height: 1.8;
-  max-width: 420px;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .detailList {
   list-style: none;
   padding: 0;
+  margin: 0 0 32px 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-bottom: 24px;
+  gap: 16px;
 }
 
 .detailList li {
   font-family: 'DM Mono', monospace;
-  font-size: 12px;
-  color: rgba(255,255,255,0.25);
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
   line-height: 1.7;
-  padding-left: 14px;
   position: relative;
+  padding-left: 20px;
 }
 
 .detailList li::before {
   content: '—';
   position: absolute;
   left: 0;
-  color: rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.2);
 }
 
 .tags {
