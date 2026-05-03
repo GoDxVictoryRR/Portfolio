@@ -6,6 +6,18 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
     let lenis: any
 
     const initLenis = async () => {
+      // On touch devices (mobile/Android), Lenis intercepts touch events
+      // and causes scroll to get permanently stuck. Use native scroll instead.
+      const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches
+      if (isTouchDevice) {
+        // Native scroll — just wire up GSAP ScrollTrigger with no Lenis
+        const { gsap } = await import('gsap')
+        const { ScrollTrigger } = await import('gsap/ScrollTrigger')
+        gsap.registerPlugin(ScrollTrigger)
+        ScrollTrigger.config({ ignoreMobileResize: true })
+        return
+      }
+
       const Lenis = (await import('lenis')).default
 
       lenis = new Lenis({

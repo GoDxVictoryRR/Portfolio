@@ -13,6 +13,13 @@
   position: fixed;
   inset: 0;
   z-index: 2;
+  pointer-events: none; /* Never block scroll events */
+}
+
+@media (min-width: 769px) {
+  .canvasWrapper {
+    pointer-events: auto; /* Restore pointer events for drag on desktop */
+  }
 }
 
 /* ——— Name ——— */
