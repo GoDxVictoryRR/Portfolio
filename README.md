@@ -1,52 +1,64 @@
-# Hardik Jaiswal — Portfolio
+# Hardik Jaiswal — Software Engineer / AI Systems Portfolio
 
-A premium, immersive personal portfolio website built with Next.js 14 and Three.js. This project features a high-fidelity 3D iridescent crystal centerpiece, scroll-driven animations, and a custom-engineered WebGL interface.
+[![Next.js 14](https://img.shields.io/badge/Next.js-14-black?logo=next.js&style=flat-square)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript&style=flat-square)](https://www.typescriptlang.org/)
+[![Three.js](https://img.shields.io/badge/Three.js-WebGL-white?logo=three.js&style=flat-square)](https://threejs.org/)
+[![GSAP](https://img.shields.io/badge/Animation-GSAP-green?style=flat-square)](https://greensock.com/gsap/)
+[![Vercel](https://img.shields.io/badge/Deployment-Vercel-black?logo=vercel&style=flat-square)](https://vercel.com/)
 
----
+An Awwwards-tier, high-performance portfolio engineered with a "WebGL-first" philosophy. This project isn't just a showcase of work; it's a demonstration of production-grade frontend engineering, mathematical 3D mapping, and cinematic user interaction.
 
-## 🛠️ Tech Stack
-
-- **Framework:** Next.js 14 (App Router)
-- **Language:** TypeScript
-- **3D Engine:** Three.js
-- **Animations:** GSAP (GreenSock) + ScrollTrigger
-- **Smooth Scrolling:** Lenis
-- **Styling:** Vanilla CSS Modules (Precision Control)
-- **Build Tool:** Turbopack
+> [!NOTE]
+> **Engineering Philosophy:** Build systems, not just websites. This portfolio prioritizes 60fps animation performance, clean architecture, and immersive sensory feedback.
 
 ---
 
-## 🏗️ Architecture & Directory Structure
+## 🚀 Engineering Highlights
 
-The project follows a standard Next.js App Router architecture with a specialized `src/components` directory for 3D elements and UI panels.
+### 💎 Interactive WebGL Hero (Three.js)
+- **Real-time Material Physics**: Features a custom-modeled "H" crystal with real-time controls for roughness, color, and noise-mapped clearcoat.
+- **Arcball Logic**: Implemented manual rotation with momentum decay and auto-rotation resume.
+- **Dynamic FOV Scaling**: Mathematical camera scaling ensures the 3D scene remains perfectly framed on any device, from iPhone portrait to Ultrawide monitors.
 
-```text
-/
-├── public/                 # Static assets (fonts, images)
-├── src/
-│   ├── app/                # Next.js App Router (Layouts & Pages)
-│   ├── components/
-│   │   ├── Hero/           # Three.js Crystal H & Hero UI Panels
-│   │   ├── Projects/       # Interactive Project Viewport Panels
-│   │   ├── Shared/         # Grid Backgrounds & UI HUD Elements
-│   │   └── ...             # Section-specific components
-│   ├── hooks/              # Custom React hooks (Scroll, Quaternion Math)
-│   ├── lib/
-│   │   ├── three/          # Three.js Scene Setup & GLSL Shaders
-│   │   └── content.ts      # Centralized Site Content Data
-│   └── types/              # TypeScript Type Definitions
-├── next.config.js          # Next.js Configuration
-├── tsconfig.json           # TypeScript Configuration
-└── package.json            # Project Dependencies
-```
+### 🎡 3D Cylinder Project Carousel
+- **Mathematical Mapping**: Projects are mapped onto a virtual 3D cylinder using `rotateY` and `translateZ` calculations.
+- **Scroll-Synchronized Physics**: Driven by GSAP ScrollTrigger, the carousel feels physically weighted and responds to momentum scrolling via Lenis.
+- **Responsive Radius**: The cylinder's radius dynamically recalculates based on viewport width to prevent visual clipping on mobile.
+
+### ✍️ Kinetic Typography & Layout
+- **Character-Level Splitting**: Utilizes `split-type` to shatter text into individual characters for staggered "cascade" reveals.
+- **Smooth Scroll Integration**: Decoupled native scroll logic from hardware via Lenis, perfectly bridged with the GSAP ticker for jitter-free 60fps animations.
+- **Clip-Path Transitions**: Sections transition via cinematic clip-path "wipe" reveals, mimicking high-end portal effects seen on premium agency sites.
 
 ---
 
-## 🚀 Getting Started
+## 🛠 Tech Stack
+
+| Category | Technology |
+| :--- | :--- |
+| **Framework** | Next.js 14 (App Router), React 18 |
+| **Language** | TypeScript (Strict Mode) |
+| **3D / WebGL** | Three.js, WebGL |
+| **Animation** | GSAP 3, ScrollTrigger, SplitType |
+| **Smoothing** | Lenis (Smooth Scroll) |
+| **Styling** | Vanilla CSS Modules, Glassmorphism Aesthetics |
+
+---
+
+## 🏗 Architectural Decisions
+
+1. **Performance-First Animation**: By bridging Lenis directly with the GSAP ticker, we eliminate "double RAF" jitter. This ensures that even with complex 3D scenes running, the UI remains responsive and fluid.
+2. **State-Driven Content**: All content is managed in a centralized `src/lib/content.ts` layer. This allows for rapid content iteration without touching the structural components.
+3. **Memory Management**: Explicitly implemented Three.js `dispose()` patterns in component cleanups to prevent GPU memory leaks during section transitions.
+4. **React StrictMode Resilience**: Engineered custom cleanup logic for `split-type` and GSAP matchMedia to handle React 18's double-mount behavior in development environments.
+
+---
+
+## 💻 Getting Started
 
 ### Prerequisites
-- Node.js (Latest LTS)
-- npm or yarn
+- Node.js 18+
+- npm / pnpm / yarn
 
 ### Installation
 1. Clone the repository:
@@ -61,13 +73,14 @@ The project follows a standard Next.js App Router architecture with a specialize
    ```bash
    npm run dev
    ```
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+4. Open [http://localhost:3000](http://localhost:3000) to view the result.
 
 ---
 
-## 👤 Owner Info
+## 📬 Contact & Links
 
-**Hardik Jaiswal**  
-- **Email:** jshivangi86@gmail.com  
-- **LinkedIn:** [linkedin.com/in/hardik-jaiswal](https://linkedin.com/in/hardik-jaiswal)  
-- **GitHub:** [github.com/GoDxVictoryRR](https://github.com/GoDxVictoryRR)  
+- **LinkedIn**: [linkedin.com/in/hardik-jaiswal](https://linkedin.com/in/hardik-jaiswal)
+- **GitHub**: [github.com/GoDxVictoryRR](https://github.com/GoDxVictoryRR)
+- **Email**: [jshivangi86@gmail.com](mailto:jshivangi86@gmail.com)
+
+Designed and Developed by **Hardik Jaiswal** © 2026
