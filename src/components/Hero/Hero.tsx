@@ -72,9 +72,12 @@ export default function Hero({ isReady = true }: HeroProps) {
 
         let mm = gsap.matchMedia();
 
-        // Shrink crystal to corner on scroll to projects
-        // We use window as trigger because projects might not be mounted on first run perfectly
+        // Shrink crystal to corner on scroll to projects — desktop only
+        // On mobile, the scrub ScrollTrigger conflicts with native Android scroll
         const crystalTimeout = setTimeout(() => {
+          const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches
+          if (isTouchDevice) return // Skip entirely on mobile
+
           const wrapper = document.getElementById('crystal-canvas-wrapper')
           if (wrapper) {
             mm.add({

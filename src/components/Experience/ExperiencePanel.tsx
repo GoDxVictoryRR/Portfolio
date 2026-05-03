@@ -26,23 +26,29 @@ export default function ExperiencePanel({ exp }: { exp: Exp }) {
     import('gsap').then(({ gsap }) => {
       import('gsap/ScrollTrigger').then(({ ScrollTrigger }) => {
         gsap.registerPlugin(ScrollTrigger)
+        const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches
         const ctx = gsap.context(() => {
-          gsap.fromTo(cardRef.current, 
-            { x: -80, opacity: 0, rotateY: -12 },
-            { x: 0, opacity: 1, rotateY: 0, duration: 0.9, ease: 'power3.out',
-              scrollTrigger: { trigger: panelRef.current, start: 'top 75%' }
-            }
-          )
-          gsap.fromTo(detailRef.current,
-            { x: 60, opacity: 0 },
-            { x: 0, opacity: 1, duration: 0.8, delay: 0.15, ease: 'power3.out',
-              scrollTrigger: { trigger: panelRef.current, start: 'top 75%' }
-            }
-          )
-          gsap.fromTo(panelRef.current!.querySelector('.ghost-text'),
-            { y: '50%' },
-            { y: '-50%', scrollTrigger: { trigger: panelRef.current, start: 'top bottom', end: 'bottom top', scrub: 1 } }
-          )
+          if (!isTouchDevice) {
+            // Card slides in from left with 3D rotate — desktop only
+            gsap.fromTo(cardRef.current,
+              { x: -80, opacity: 0, rotateY: -12 },
+              { x: 0, opacity: 1, rotateY: 0, duration: 0.9, ease: 'power3.out',
+                scrollTrigger: { trigger: panelRef.current, start: 'top 75%' }
+              }
+            )
+            // Details slide in from right — desktop only
+            gsap.fromTo(detailRef.current,
+              { x: 60, opacity: 0 },
+              { x: 0, opacity: 1, duration: 0.8, delay: 0.15, ease: 'power3.out',
+                scrollTrigger: { trigger: panelRef.current, start: 'top 75%' }
+              }
+            )
+            // Ghost text parallax — desktop only (scrub on mobile causes sticking)
+            gsap.fromTo(panelRef.current!.querySelector('.ghost-text'),
+              { y: '50%' },
+              { y: '-50%', scrollTrigger: { trigger: panelRef.current, start: 'top bottom', end: 'bottom top', scrub: 1 } }
+            )
+          }
         }, panelRef)
         return () => ctx.revert()
       })

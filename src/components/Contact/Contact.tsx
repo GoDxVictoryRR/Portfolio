@@ -10,10 +10,13 @@ export default function Contact() {
     import('gsap').then(({ gsap }) => {
       import('gsap/ScrollTrigger').then(({ ScrollTrigger }) => {
         gsap.registerPlugin(ScrollTrigger)
+        const isTouchDevice = window.matchMedia('(hover: none) and (pointer: coarse)').matches
         const ctx = gsap.context(() => {
 
-          // --- HEADING: Per-character lift from below (Locomotive/agency standard) ---
-          gsap.set('.contact-char', { y: '115%' })
+          // --- HEADING: Per-character lift from below ---
+          if (!isTouchDevice) {
+            gsap.set('.contact-char', { y: '115%' })
+          }
           ScrollTrigger.create({
             trigger: sectionRef.current,
             start: 'top 75%',
@@ -27,20 +30,24 @@ export default function Contact() {
             }
           })
 
-          // --- HEADING PARALLAX EXIT: drifts gently upward as you scroll past ---
-          gsap.to('.contact-heading-wrap', {
-            y: -60,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: sectionRef.current,
-              start: 'top top',
-              end: 'bottom top',
-              scrub: 2
-            }
-          })
+          // --- HEADING PARALLAX EXIT (desktop only — scrub causes sticking on mobile) ---
+          if (!isTouchDevice) {
+            gsap.to('.contact-heading-wrap', {
+              y: -60,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: sectionRef.current,
+                start: 'top top',
+                end: 'bottom top',
+                scrub: 2
+              }
+            })
+          }
 
           // --- SUBHEADING fade up ---
-          gsap.set('.contact-subheading', { opacity: 0, y: 18 })
+          if (!isTouchDevice) {
+            gsap.set('.contact-subheading', { opacity: 0, y: 18 })
+          }
           ScrollTrigger.create({
             trigger: sectionRef.current,
             start: 'top 70%',
@@ -53,7 +60,9 @@ export default function Contact() {
           })
 
           // --- LINKS: stagger rise ---
-          gsap.set('.contact-link', { opacity: 0, y: 20 })
+          if (!isTouchDevice) {
+            gsap.set('.contact-link', { opacity: 0, y: 20 })
+          }
           ScrollTrigger.create({
             trigger: '.contact-links-wrapper',
             start: 'top 88%',
@@ -65,20 +74,22 @@ export default function Contact() {
             }
           })
 
-          // --- GEOMETRIC SHAPES ---
-          gsap.set(['.contact-geo-1', '.contact-geo-2', '.contact-geo-3'], {
-            opacity: 0, scale: 0.7, rotate: -15
-          })
-          ScrollTrigger.create({
-            trigger: sectionRef.current,
-            start: 'top 85%',
-            onEnter: () => {
-              gsap.to(['.contact-geo-1', '.contact-geo-2', '.contact-geo-3'], {
-                opacity: 1, scale: 1, rotate: 0,
-                stagger: 0.18, duration: 1.0, ease: 'power3.out'
-              })
-            }
-          })
+          // --- GEOMETRIC SHAPES (desktop only) ---
+          if (!isTouchDevice) {
+            gsap.set(['.contact-geo-1', '.contact-geo-2', '.contact-geo-3'], {
+              opacity: 0, scale: 0.7, rotate: -15
+            })
+            ScrollTrigger.create({
+              trigger: sectionRef.current,
+              start: 'top 85%',
+              onEnter: () => {
+                gsap.to(['.contact-geo-1', '.contact-geo-2', '.contact-geo-3'], {
+                  opacity: 1, scale: 1, rotate: 0,
+                  stagger: 0.18, duration: 1.0, ease: 'power3.out'
+                })
+              }
+            })
+          }
 
         }, sectionRef)
         return () => ctx.revert()
