@@ -26,6 +26,8 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
       const { ScrollTrigger } = await import('gsap/ScrollTrigger')
       gsap.registerPlugin(ScrollTrigger)
 
+      ScrollTrigger.config({ ignoreMobileResize: true })
+
       lenis.on('scroll', ScrollTrigger.update)
 
       gsap.ticker.add((time) => {

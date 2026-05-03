@@ -42,6 +42,7 @@ export default function Projects() {
           start: 'top top',
           end: '+=200%', // 200% of viewport height of scrub travel
           pin: true,
+          anticipatePin: 1,
           pinSpacing: true, // needs its own spacing to push content below
           scrub: 1.2,
           onUpdate: (self) => {

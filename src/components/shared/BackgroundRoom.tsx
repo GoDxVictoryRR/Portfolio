@@ -58,20 +58,15 @@ export default function BackgroundRoom() {
         preload="auto"
         disablePictureInPicture
         disableRemotePlayback
-        onEnded={(e) => {
-          const v = e.currentTarget;
-          v.currentTime = 0;
-          v.play().catch(() => {});
-        }}
         style={{
           width: '100%',
           height: '100%',
           objectFit: 'cover',
-          transform: 'translate3d(0, 0, 0)',
+          opacity: 1,
+          pointerEvents: 'none',
+          transform: 'translateZ(0)', /* Force GPU layer */
           willChange: 'transform',
-          backfaceVisibility: 'hidden',
-          perspective: 1000,
-          opacity: 1, 
+          contain: 'strict', /* Limit paint recalculations */
         }}
       />
     </div>
