@@ -4,7 +4,8 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?logo=typescript&style=flat-square)](https://www.typescriptlang.org/)
 [![Three.js](https://img.shields.io/badge/Three.js-WebGL-white?logo=three.js&style=flat-square)](https://threejs.org/)
 [![GSAP](https://img.shields.io/badge/Animation-GSAP-green?style=flat-square)](https://greensock.com/gsap/)
-[![Vercel](https://img.shields.io/badge/Deployment-Vercel-black?logo=vercel&style=flat-square)](https://vercel.com/)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/your-netlify-id/deploy-status)](https://www.netlify.com/)
+[![Netlify](https://img.shields.io/badge/Deployment-Netlify-00ADBB?logo=netlify&style=flat-square)](https://www.netlify.com/)
 
 An Awwwards-tier, high-performance portfolio engineered with a "WebGL-first" philosophy. This project isn't just a showcase of work; it's a demonstration of production-grade frontend engineering, mathematical 3D mapping, and cinematic user interaction.
 
