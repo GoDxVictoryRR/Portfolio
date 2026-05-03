@@ -11,19 +11,25 @@ export default function Projects() {
   const progressBarRef = useRef<HTMLDivElement>(null)
   const progressLineRef = useRef<HTMLDivElement>(null)
   const counterRef = useRef<HTMLSpanElement>(null)
+  const [isMobile, setIsMobile] = useState(false)
   const [radius, setRadius] = useState(1800)
 
-  // Handle responsive radius
+  // Detect mobile
   useEffect(() => {
-    const handleResize = () => {
-      setRadius(window.innerWidth < 768 ? 1000 : 1800)
+    const check = () => {
+      const mobile = window.innerWidth < 768
+      setIsMobile(mobile)
+      setRadius(mobile ? 1000 : 1800)
     }
-    handleResize() // Initial check
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
   }, [])
 
+  // Desktop-only: 3D cylinder scroll animation
   useEffect(() => {
+    if (isMobile) return // Skip pin/3D on mobile entirely
+
     gsap.registerPlugin(ScrollTrigger)
     const ctx = gsap.context(() => {
       const cylinder = cylinderRef.current
@@ -32,18 +38,16 @@ export default function Projects() {
       const angleStep = 45
       const totalAngle = -(projects.length - 1) * angleStep
 
-      // Pin THIS section itself for the carousel rotation
-      // The outer parallax wrapper uses pinSpacing: false so it doesn't conflict
       gsap.to(cylinder, {
         rotateY: totalAngle,
         ease: 'none',
         scrollTrigger: {
           trigger: sectionRef.current,
           start: 'top top',
-          end: '+=200%', // 200% of viewport height of scrub travel
+          end: '+=200%',
           pin: true,
           anticipatePin: 1,
-          pinSpacing: true, // needs its own spacing to push content below
+          pinSpacing: true,
           scrub: 1.2,
           onUpdate: (self) => {
             if (progressLineRef.current) {
@@ -60,7 +64,6 @@ export default function Projects() {
         }
       })
 
-      // Ghost text fades as carousel rotates
       gsap.to('.ghost-text-projects', {
         x: '-8%',
         opacity: 0,
@@ -73,7 +76,6 @@ export default function Projects() {
         }
       })
 
-      // Progress bar entrance
       gsap.fromTo(progressBarRef.current,
         { opacity: 0, y: -10 },
         {
@@ -87,19 +89,59 @@ export default function Projects() {
       )
     }, sectionRef)
     return () => ctx.revert()
-  }, [])
+  }, [isMobile])
 
+  // Mobile layout: plain vertical cards, no GSAP pin
+  if (isMobile) {
+    return (
+      <section id="projects" ref={sectionRef} className={styles.mobileSection}>
+        <div className={styles.mobileSectionHeader}>
+          <span className={styles.mobileSectionLabel}>PROJECTS</span>
+          <h2 className={styles.mobileSectionTitle}>Selected Work</h2>
+        </div>
+        {projects.map((project, i) => (
+          <div key={i} className={styles.mobileCard}>
+            <div
+              className={styles.mobileCardImage}
+              style={{ background: project.imageGradient }}
+            >
+              <span className={styles.mobileCardWatermark}>{project.title}</span>
+            </div>
+            <div className={styles.mobileCardBody}>
+              <span className={styles.mobileCardTag}>{project.tag}</span>
+              <h3 className={styles.mobileCardTitle}>{project.title}</h3>
+              <p className={styles.mobileCardDesc}>{project.description}</p>
+              <div className={styles.mobileMetrics}>
+                {project.metrics?.map((m, idx) => (
+                  <div key={idx} className={styles.mobileMetricBlock}>
+                    <span className={`${styles.mobileMetricValue} font-display`}>{m.value}</span>
+                    <span className={styles.mobileMetricLabel}>{m.label}</span>
+                  </div>
+                ))}
+              </div>
+              <div className={styles.mobileTags}>
+                {project.tags.map(t => (
+                  <span key={t} className="tag">{t}</span>
+                ))}
+              </div>
+              <a href={project.github} target="_blank" rel="noopener noreferrer" className={styles.mobileGhLink}>
+                View on GitHub ↗
+              </a>
+            </div>
+          </div>
+        ))}
+      </section>
+    )
+  }
+
+  // Desktop layout: 3D cylinder carousel
   return (
     <section id="projects" ref={sectionRef} className={styles.carouselSection}>
-      {/* 3D Perspective Viewport */}
       <div className={styles.viewport}>
-
-        {/* Ghost watermark */}
         <span className={`${styles.ghostText} ghost-text-projects`}>
           PROJECTS
         </span>
 
-        {/* Scroll Progress Bar */}
         <div ref={progressBarRef} className={styles.progressBar}>
           <div ref={progressLineRef} className={styles.progressLine} />
           <div className={styles.progressMeta}>
@@ -110,12 +152,10 @@ export default function Projects() {
           </div>
         </div>
 
-        {/* Rotating 3D Cylinder */}
         <div className={styles.cylinderOrigin} style={{ transform: `translateZ(-${radius}px)` }}>
           <div ref={cylinderRef} className={styles.cylinder}>
             {projects.map((project, i) => {
               const angle = i * 45
-
               return (
                 <div
                   key={i}
@@ -125,8 +165,6 @@ export default function Projects() {
                   }}
                 >
                   <div className={`${styles.projectPanel} project-panel`}>
-
-                    {/* Left: Image Panel */}
                     <div
                       className={styles.imagePanel}
                       style={{ background: project.imageGradient }}
@@ -137,7 +175,6 @@ export default function Projects() {
                       </span>
                     </div>
 
-                    {/* Right: Details */}
                     <div className={styles.details}>
                       <div className={styles.dateLine}>
                         <span className={styles.date}>{project.date}</span>
@@ -175,14 +212,12 @@ export default function Projects() {
                         <span className={styles.moreLink}>More Projects ↗</span>
                       </div>
                     </div>
-
                   </div>
                 </div>
               )
             })}
           </div>
         </div>
-
       </div>
     </section>
   )

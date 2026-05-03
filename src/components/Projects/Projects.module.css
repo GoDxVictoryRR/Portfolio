@@ -282,38 +282,136 @@
   }
 }
 
-@media (max-width: 768px) {
-  .projectPanel {
-    flex-direction: column;
-    padding: 20px;
-    gap: 24px;
-    width: 92vw;
-  }
-  .imagePanel {
-    width: 100%;
-    height: 40vh;
-    transform: rotateY(0deg); /* Flatten fold for mobile */
-  }
-  .details {
-    width: 100%;
-    transform: rotateY(0deg); /* Flatten fold for mobile */
-    align-items: center;
-    text-align: center;
-  }
-  .description {
-    text-align: center;
-  }
-  .tags {
-    justify-content: center;
-  }
-  .links {
-    width: 100%;
-    justify-content: space-around;
-  }
-  .metrics {
-    justify-content: center;
-  }
-  .progressBar {
-    padding: 20px 24px 0;
-  }
+/* ——— Mobile Card Layout (replaces 3D cylinder entirely) ——— */
+.mobileSection {
+  position: relative;
+  width: 100%;
+  padding: 80px 20px 60px;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.mobileSectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.mobileSectionLabel {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.3);
+}
+
+.mobileSectionTitle {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(40px, 12vw, 72px);
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+}
+
+.mobileCard {
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.02);
+}
+
+.mobileCardImage {
+  width: 100%;
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobileCardWatermark {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(32px, 10vw, 60px);
+  color: rgba(255,255,255,0.08);
+  letter-spacing: -0.02em;
+  pointer-events: none;
+  user-select: none;
+}
+
+.mobileCardBody {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mobileCardTag {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.15em;
+}
+
+.mobileCardTitle {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(28px, 8vw, 48px);
+  color: #ffffff;
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+}
+
+.mobileCardDesc {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.7;
+}
+
+.mobileMetrics {
+  display: flex;
+  gap: 24px;
+}
+
+.mobileMetricBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mobileMetricValue {
+  font-size: clamp(20px, 6vw, 30px);
+  color: #ffffff;
+  line-height: 1;
+}
+
+.mobileMetricLabel {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.08em;
+}
+
+.mobileTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mobileGhLink {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  padding-bottom: 2px;
+  width: fit-content;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.mobileGhLink:hover {
+  color: #ffffff;
+  border-color: rgba(255,255,255,0.5);
 }
