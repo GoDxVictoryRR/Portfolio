@@ -90,7 +90,7 @@ export default function Projects() {
   }, [])
 
   return (
-    <section id="projects" data-section ref={sectionRef} className={styles.carouselSection}>
+    <section id="projects" ref={sectionRef} className={styles.carouselSection}>
       {/* 3D Perspective Viewport */}
       <div className={styles.viewport}>
 

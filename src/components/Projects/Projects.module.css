@@ -3,6 +3,7 @@
   width: 100vw;
   min-height: 100dvh;
   background: transparent;
+  touch-action: pan-y;
 }
 
 /* Fixed viewport during scroll */
