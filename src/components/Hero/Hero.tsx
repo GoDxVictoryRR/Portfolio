@@ -2,6 +2,7 @@
 import { useRef, useState, useCallback, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { hero } from '@/lib/content'
+import SplitType from 'split-type'
 import QuaternionPanel from './QuaternionPanel'
 import MaterialPanel from './MaterialPanel'
 import GridBackground from '@/components/shared/GridBackground'
@@ -46,36 +47,67 @@ export default function Hero({ isReady = true }: HeroProps) {
       import('gsap/ScrollTrigger').then(({ ScrollTrigger }) => {
         gsap.registerPlugin(ScrollTrigger)
         
+        let splitLine1: SplitType | null = null;
+        let splitLine2: SplitType | null = null;
+
         // Hero entrance animation - wait a tiny bit after loader completes
-        setTimeout(() => {
-          gsap.to('.hero-name-line-1', { y: 0, opacity: 1, duration: 0.9, ease: 'power3.out' })
-          gsap.to('.hero-name-line-2', { y: 0, opacity: 1, duration: 0.9, delay: 0.15, ease: 'power3.out' })
-          gsap.to('.hero-role', { opacity: 1, duration: 0.5, ease: 'power2.out' })
-          gsap.to('.crystal-canvas-inner', { scale: 1, opacity: 1, duration: 1.0, ease: 'power3.out' })
-          gsap.to('.quaternion-panel', { x: 0, opacity: 1, duration: 0.7, ease: 'power2.out' })
-          gsap.to('.material-panel', { x: 0, opacity: 1, duration: 0.7, ease: 'power2.out' })
+        const heroTimeout = setTimeout(() => {
+          // Split the text into characters
+          splitLine1 = new SplitType('.hero-name-line-1', { types: 'chars' })
+          splitLine2 = new SplitType('.hero-name-line-2', { types: 'chars' })
+
+          // Initial state for GSAP is important so characters are hidden before stagger
+          if (splitLine1.chars && splitLine2.chars) {
+            gsap.set([splitLine1.chars, splitLine2.chars], { y: 50, opacity: 0 })
+
+            gsap.to(splitLine1.chars, { y: 0, opacity: 1, duration: 0.9, ease: 'back.out(1.7)', stagger: 0.04 })
+            gsap.to(splitLine2.chars, { y: 0, opacity: 1, duration: 0.9, delay: 0.3, ease: 'back.out(1.7)', stagger: 0.04 })
+          }
+          
+          gsap.to('.hero-role', { opacity: 1, duration: 0.8, delay: 0.6, ease: 'power2.out' })
+          gsap.to('.crystal-canvas-inner', { scale: 1, opacity: 1, duration: 1.5, ease: 'power3.out' })
+          gsap.to('.quaternion-panel', { x: 0, opacity: 1, duration: 0.7, delay: 0.8, ease: 'power2.out' })
+          gsap.to('.material-panel', { x: 0, opacity: 1, duration: 0.7, delay: 0.8, ease: 'power2.out' })
         }, 100)
+
+        let mm = gsap.matchMedia();
 
         // Shrink crystal to corner on scroll to projects
         // We use window as trigger because projects might not be mounted on first run perfectly
-        setTimeout(() => {
+        const crystalTimeout = setTimeout(() => {
           const wrapper = document.getElementById('crystal-canvas-wrapper')
           if (wrapper) {
-            ScrollTrigger.create({
-              trigger: '#projects',
-              start: 'top 60%',
-              end: 'top top',
-              scrub: true,
-              animation: gsap.to(wrapper, {
-                scale: 0.2,
-                x: '40vw',
-                y: '40vh',
-                opacity: 0,
-                transformOrigin: 'center center'
-              })
-            })
+            mm.add({
+              isDesktop: "(min-width: 769px)",
+              isMobile: "(max-width: 768px)"
+            }, (context) => {
+              let { isDesktop } = context.conditions as any;
+              
+              ScrollTrigger.create({
+                trigger: '#projects',
+                start: 'top 60%',
+                end: 'top top',
+                scrub: true,
+                animation: gsap.to(wrapper, {
+                  scale: isDesktop ? 0.2 : 0,
+                  x: isDesktop ? '40vw' : '0vw',
+                  y: isDesktop ? '40vh' : '30vh',
+                  opacity: 0,
+                  transformOrigin: 'center center'
+                })
+              });
+            });
           }
         }, 500)
+
+        // Cleanup
+        return () => {
+          clearTimeout(heroTimeout);
+          clearTimeout(crystalTimeout);
+          if (splitLine1) splitLine1.revert();
+          if (splitLine2) splitLine2.revert();
+          mm.revert();
+        }
       })
     })
   }, [isReady])

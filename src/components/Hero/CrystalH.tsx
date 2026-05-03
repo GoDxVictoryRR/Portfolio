@@ -101,7 +101,8 @@ const CrystalH = ({ onQuaternionUpdate, crystalRef }: CrystalHProps) => {
 
     // Camera
     const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 100)
-    camera.position.z = 8
+    const initialAspect = width / height
+    camera.position.z = initialAspect < 1 ? 10 + (1 - initialAspect) * 8 : 8
 
     // Scene
     const scene = new THREE.Scene()
@@ -230,6 +231,11 @@ const CrystalH = ({ onQuaternionUpdate, crystalRef }: CrystalHProps) => {
       camera.aspect = width / height
       camera.updateProjectionMatrix()
       renderer.setSize(width, height)
+
+      // Responsive FOV / Camera Distance
+      const aspect = width / height
+      // Move camera back on narrow portrait screens so crystal isn't cut off
+      camera.position.z = aspect < 1 ? 10 + (1 - aspect) * 8 : 8
     }
 
     function onArcballDrag(e: Event) {

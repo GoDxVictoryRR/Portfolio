@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef } from 'react'
 import { about, hero } from '@/lib/content'
+import SplitType from 'split-type'
 import GridBackground from '@/components/shared/GridBackground'
 import PlusMarkers from '@/components/shared/PlusMarkers'
 import styles from './About.module.css'
@@ -12,26 +13,31 @@ export default function About() {
     import('gsap').then(({ gsap }) => {
       import('gsap/ScrollTrigger').then(({ ScrollTrigger }) => {
         gsap.registerPlugin(ScrollTrigger)
+        let splitBio: SplitType | null = null;
         const ctx = gsap.context(() => {
 
-          // --- BIO LINES: Clip-path "lift from floor" reveal ---
-          gsap.set('.about-line-reveal', {
-            y: '105%',
-            opacity: 0,
-          })
-          ScrollTrigger.create({
-            trigger: '.about-bio-wrapper',
-            start: 'top 85%',
-            onEnter: () => {
-              gsap.to('.about-line-reveal', {
-                y: '0%',
-                opacity: 1,
-                stagger: 0.12,
-                duration: 0.9,
-                ease: 'power3.out'
-              })
-            }
-          })
+          // --- BIO: Kinetic Typography Reveal ---
+          splitBio = new SplitType('.about-bio-text', { types: 'words,chars' })
+
+          if (splitBio.chars) {
+            gsap.set(splitBio.chars, {
+              y: 20,
+              opacity: 0,
+            })
+            ScrollTrigger.create({
+              trigger: '.about-bio-wrapper',
+              start: 'top 85%',
+              onEnter: () => {
+                gsap.to(splitBio?.chars || [], {
+                  y: 0,
+                  opacity: 1,
+                  stagger: 0.015,
+                  duration: 0.5,
+                  ease: 'back.out(2)'
+                })
+              }
+            })
+          }
 
           // --- STATS: Count up from 0 ---
           const statEls = gsap.utils.toArray<HTMLElement>('.stat-count-up')
@@ -93,13 +99,13 @@ export default function About() {
           })
 
         }, sectionRef)
-        return () => ctx.revert()
+        return () => {
+          ctx.revert()
+          if (splitBio) splitBio.revert()
+        }
       })
     })
   }, [])
-
-  // Split bio into lines for individual reveal
-  const bioLines = about.bio.split('. ').filter(Boolean)
 
   return (
     <section id="about" data-section ref={sectionRef} className={styles.about}>
@@ -114,15 +120,11 @@ export default function About() {
         <div className={styles.left}>
           <span className={styles.colLabel}>ABOUT</span>
 
-          {/* Bio with line-by-line reveal */}
+          {/* Bio with kinetic typography reveal */}
           <div className={`${styles.bioWrapper} about-bio-wrapper`}>
-            {bioLines.map((line, i) => (
-              <div key={i} className={styles.lineOuter}>
-                <p className={`${styles.bioLine} about-line-reveal`}>
-                  {line}{i < bioLines.length - 1 ? '.' : ''}
-                </p>
-              </div>
-            ))}
+            <p className={`${styles.bioLine} about-bio-text`}>
+              {about.bio}
+            </p>
           </div>
 
           {/* Stats with count-up */}

@@ -1,5 +1,5 @@
 'use client'
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { projects } from '@/lib/content'
 import gsap from 'gsap'
 import ScrollTrigger from 'gsap/ScrollTrigger'
@@ -11,6 +11,17 @@ export default function Projects() {
   const progressBarRef = useRef<HTMLDivElement>(null)
   const progressLineRef = useRef<HTMLDivElement>(null)
   const counterRef = useRef<HTMLSpanElement>(null)
+  const [radius, setRadius] = useState(1800)
+
+  // Handle responsive radius
+  useEffect(() => {
+    const handleResize = () => {
+      setRadius(window.innerWidth < 768 ? 1000 : 1800)
+    }
+    handleResize() // Initial check
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
@@ -99,10 +110,9 @@ export default function Projects() {
         </div>
 
         {/* Rotating 3D Cylinder */}
-        <div className={styles.cylinderOrigin}>
+        <div className={styles.cylinderOrigin} style={{ transform: `translateZ(-${radius}px)` }}>
           <div ref={cylinderRef} className={styles.cylinder}>
             {projects.map((project, i) => {
-              const radius = 1800
               const angle = i * 45
 
               return (

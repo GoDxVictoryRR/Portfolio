@@ -18,12 +18,8 @@ export default function LenisProvider({ children }: { children: React.ReactNode 
         touchMultiplier: 2,
       })
 
-      function raf(time: number) {
-        lenis.raf(time)
-        requestAnimationFrame(raf)
-      }
-
-      requestAnimationFrame(raf)
+      // We DO NOT use native requestAnimationFrame here.
+      // We rely entirely on GSAP's ticker to drive lenis.raf so they are perfectly synced.
 
       // Bridge Lenis with GSAP ScrollTrigger
       const { gsap } = await import('gsap')

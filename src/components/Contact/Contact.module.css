@@ -160,3 +160,20 @@
   letter-spacing: 0.15em;
   z-index: 2;
 }
+
+/* ——— Responsive ——— */
+@media (max-width: 768px) {
+  .triangle, .circle, .bracket {
+    display: none; /* Hide background geometry on mobile to reduce clutter */
+  }
+  .subheading {
+    padding: 0 24px;
+  }
+  .links {
+    gap: 24px;
+    flex-direction: column;
+  }
+  .contactLink {
+    font-size: 14px;
+  }
+}

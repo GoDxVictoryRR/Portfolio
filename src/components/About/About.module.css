@@ -146,3 +146,21 @@
   .right { padding-left: 0; border-left: none; }
   .statBlock { padding: 0 20px; }
 }
+
+@media (max-width: 768px) {
+  .about {
+    padding: 100px 24px 60px 24px;
+  }
+  .bioLine {
+    font-size: 15px;
+  }
+  .stats {
+    flex-wrap: wrap;
+    gap: 24px 0;
+  }
+  .statBlock {
+    padding: 0 20px 0 0;
+    border-right: none;
+    flex: 1 1 40%;
+  }
+}

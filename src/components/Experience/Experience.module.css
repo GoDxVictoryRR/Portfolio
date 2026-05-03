@@ -1,6 +1,6 @@
 .expSection {
   position: relative;
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   display: flex;
   align-items: center;
@@ -200,4 +200,46 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+/* ——— Responsive ——— */
+@media (max-width: 1024px) {
+  .content {
+    flex-direction: column;
+    gap: 40px;
+    padding: 100px 0;
+  }
+  .card {
+    width: 100%;
+    height: 45vh;
+    transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
+  }
+  .card:hover {
+    transform: perspective(1000px) rotateY(0deg) rotateX(0deg) translateY(-4px) translateZ(10px);
+  }
+}
+
+@media (max-width: 768px) {
+  .expSection {
+    padding: 80px 24px;
+    height: auto;
+  }
+  .ghostText {
+    display: none; /* Hide on mobile to prevent overflow/clutter */
+  }
+  .cardInner {
+    padding: 24px;
+  }
+  .cardRole {
+    font-size: 24px;
+  }
+  .cardBullets li {
+    font-size: 11px;
+  }
+  .companyLabel {
+    font-size: 32px;
+  }
+  .role {
+    font-size: 40px;
+  }
 }
